@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nébula de Notas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Variables de tema */
+        :root {
+            --bg-primary: #0E0B1D;
+            --accent-1: #A259FF;
+            --accent-2: #FF7759;
+            --text-primary: #E8E6F0;
+        }
+
+        [data-theme="ella"] {
+            --bg-primary: #1C1529;
+            --accent-1: #E36FFF;
+            --accent-2: #FF8FAB;
+            --text-primary: #F5E6FF;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animaciones flotantes */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px var(--accent-1), 0 0 40px var(--accent-1)50; }
+            50% { box-shadow: 0 0 30px var(--accent-1), 0 0 60px var(--accent-1)70; }
+        }
+
+        .star-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.18);
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .star-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px var(--accent-1)60;
+            border-color: var(--accent-1);
+        }
+
+        .star-card:nth-child(2) { animation-delay: -1s; }
+        .star-card:nth-child(3) { animation-delay: -2s; }
+        .star-card:nth-child(4) { animation-delay: -3s; }
+
+        /* Centro circular (dashboard) */
+        .central-hub {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 
+                inset 0 0 60px rgba(255,255,255,0.1),
+                0 8px 32px rgba(0,0,0,0.4),
+                0 0 80px var(--accent-1)30;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        .central-hub img {
+            transition: transform 0.6s ease;
+        }
+
+        .central-hub:hover img {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Canvas */
+        .drawing-canvas {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+
+        /* Botón de tema */
+        .theme-toggle {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 0 30px var(--accent-1);
+        }
+
+        /* Textarea personalizado */
+        textarea {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            resize: none;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 20px var(--accent-1)40;
+        }
+
+        /* Botones */
+        .btn {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Scroll suave */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-1) transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+    
+    <!-- Botón de cambio de tema -->
+    <button id="themeToggle" class="theme-toggle fixed top-6 right-6 w-14 h-14 rounded-full z-50 flex items-center justify-center text-2xl shadow-lg">
+        🌙
+    </button>
+
+    <!-- Contenedor principal -->
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Título -->
+        <h1 class="text-5xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            ✨ Nébula de Notas ✨
+        </h1>
+        <p class="text-center text-gray-400 mb-12">Tu espacio personal en el cosmos digital</p>
+
+        <!-- Sección superior: Cards informativas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            
+            <!-- Card informativa 1 -->
+            <div class="star-card rounded-3xl p-6 shadow-2xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-4xl">🌟</span>
+                    <h3 class="text-xl font-semibold">Inspiración Diaria</h3>
+                </div>
+                <p class="text-gray-300 text-sm">
+                    "El universo está hecho de historias, no de átomos." - Muriel Rukeyser
+                </p>
+            </div>
+
+            <!-- Card informativa 2 -->
+            <div class="star-card rounded-3xl p-6 shadow-2xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-4xl">💫</span>
+                    <h3 class="text-xl font-semibold">Tus Constelaciones</h3>
+                </div>
+                <p class="text-gray-300 text-sm">
+                    <span id="noteCount">0</span> estrellas creadas en tu nébula personal.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Centro circular (Dashboard) -->
+        <div class="flex justify-center mb-12">
+            <div class="central-hub rounded-full w-72 h-72 flex items-center justify-center relative overflow-hidden">
+                <img 
+                    id="centralImage" 
+                    src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=400&fit=crop" 
+                    alt="Centro de la nébula"
+                    class="w-full h-full object-cover rounded-full"
+                />
+                <!-- Botón para cambiar imagen (futuro: integrar upload) -->
+                <button onclick="changeImage()" class="absolute bottom-4 right-4 bg-white bg-opacity-20 backdrop-blur-md p-3 rounded-full hover:bg-opacity-30 transition">
+                    📷
+                </button>
+            </div>
+        </div>
+
+        <!-- Sección inferior: Cards editables -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="notesContainer">
+            <!-- Las notas se generarán dinámicamente -->
+        </div>
+
+        <!-- Botón flotante para agregar nota -->
+        <button onclick="addNote()" class="btn fixed bottom-8 right-8 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl z-40">
+            ✨
+        </button>
+
+    </div>
+
+    <!-- Modal para editar nota -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="star-card rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Editar Estrella</h2>
+                <button onclick="closeModal()" class="text-3xl hover:rotate-90 transition">&times;</button>
+            </div>
+
+            <!-- Textarea para texto -->
+            <div class="mb-6">
+                <label class="block text-sm font-semibold mb-2">📝 Tu historia del día</label>
+                <textarea 
+                    id="noteText" 
+                    class="w-full h-32 rounded-xl p-4 transition"
+                    placeholder="Escribe tus pensamientos aquí..."
+                ></textarea>
+            </div>
+
+            <!-- Canvas para dibujo -->
+            <div class="mb-6">
+                <label class="block text-sm font-semibold mb-2">🎨 Tu dibujo cósmico</label>
+                <div class="relative">
+                    <canvas 
+                        id="drawingCanvas" 
+                        class="drawing-canvas w-full h-64 border border-gray-600"
+                        width="600"
+                        height="300"
+                    ></canvas>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="clearCanvas()" class="px-4 py-2 bg-red-500 bg-opacity-30 rounded-lg hover:bg-opacity-50 transition text-sm">
+                            🗑️ Limpiar
+                        </button>
+                        <input type="color" id="brushColor" value="#A259FF" class="w-12 h-10 rounded cursor-pointer">
+                        <input type="range" id="brushSize" min="1" max="20" value="3" class="flex-1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex gap-3">
+                <button onclick="saveNote()" class="btn flex-1 py-3 rounded-xl font-semibold">
+                    💾 Guardar
+                </button>
+                <button onclick="deleteNote()" class="bg-red-500 bg-opacity-30 flex-1 py-3 rounded-xl font-semibold hover:bg-opacity-50 transition">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===============================
+        // SISTEMA DE ALMACENAMIENTO
+        // ===============================
+        // TODO: Integrar Firebase/Supabase aquí
+        // Para autenticación y sincronización en la nube
+        
+        class NotesStorage {
+            constructor() {
+                this.storageKey = 'nebula_notes';
+            }
+
+            getNotes() {
+                const data = localStorage.getItem(this.storageKey);
+                return data ? JSON.parse(data) : this.getDefaultNotes();
+            }
+
+            saveNotes(notes) {
+                localStorage.setItem(this.storageKey, JSON.stringify(notes));
+            }
+
+            getDefaultNotes() {
+                return [
+                    { id: 1, text: 'Mi primer pensamiento cósmico...', drawing: null, date: new Date().toISOString() },
+                    { id: 2, text: 'Gratitud del día...', drawing: null, date: new Date().toISOString() },
+                    { id: 3, text: 'Metas para mañana...', drawing: null, date: new Date().toISOString() },
+                    { id: 4, text: 'Reflexión nocturna...', drawing: null, date: new Date().toISOString() }
+                ];
+            }
+        }
+
+        const storage = new NotesStorage();
+        let notes = storage.getNotes();
+        let currentNoteId = null;
+        let isDrawing = false;
+        let canvas, ctx;
+
+        // ===============================
+        // SISTEMA DE TEMAS
+        // ===============================
+        
+        const themeToggle = document.getElementById('themeToggle');
+        let currentTheme = 'el'; // 'el' o 'ella'
+
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'el' ? 'ella' : 'el';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            themeToggle.textContent = currentTheme === 'el' ? '🌙' : '🌸';
+        });
+
+        // ===============================
+        // RENDERIZADO DE NOTAS
+        // ===============================
+        
+        function renderNotes() {
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = '';
+
+            notes.forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'star-card rounded-3xl p-6 shadow-2xl cursor-pointer';
+                card.onclick = () => openModal(note.id);
+
+                const preview = note.text.substring(0, 80) + (note.text.length > 80 ? '...' : '');
+                const hasDrawing = note.drawing ? '🎨' : '';
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-2xl">⭐</span>
+                        <h3 class="text-lg font-semibold">Estrella #${note.id}</h3>
+                        <span class="ml-auto">${hasDrawing}</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">${preview}</p>
+                    <p class="text-xs text-gray-500">${new Date(note.date).toLocaleDateString()}</p>
+                `;
+
+                container.appendChild(card);
+            });
+
+            // Actualizar contador
+            document.getElementById('noteCount').textContent = notes.length;
+        }
+
+        // ===============================
+        // MODAL Y CANVAS
+        // ===============================
+        
+        function openModal(noteId) {
+            currentNoteId = noteId;
+            const note = notes.find(n => n.id === noteId);
+            
+            document.getElementById('noteText').value = note.text;
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editModal').classList.add('flex');
+
+            // Inicializar canvas
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Restaurar dibujo si existe
+            if (note.drawing) {
+                const img = new Image();
+                img.onload = () => ctx.drawImage(img, 0, 0);
+                img.src = note.drawing;
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            setupCanvas();
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editModal').classList.remove('flex');
+            currentNoteId = null;
+        }
+
+        function setupCanvas() {
+            const brushColor = document.getElementById('brushColor');
+            const brushSize = document.getElementById('brushSize');
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.strokeStyle = brushColor.value;
+                ctx.lineWidth = brushSize.value;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // ===============================
+        // CRUD DE NOTAS
+        // ===============================
+        
+        function saveNote() {
+            const note = notes.find(n => n.id === currentNoteId);
+            note.text = document.getElementById('noteText').value;
+            note.drawing = canvas.toDataURL();
+            note.date = new Date().toISOString();
+
+            storage.saveNotes(notes);
+            renderNotes();
+            closeModal();
+
+            // Animación de guardado
+            showNotification('✨ Estrella guardada en tu nébula');
+        }
+
+        function deleteNote() {
+            if (confirm('¿Eliminar esta estrella de tu nébula?')) {
+                notes = notes.filter(n => n.id !== currentNoteId);
+                storage.saveNotes(notes);
+                renderNotes();
+                closeModal();
+                showNotification('🌑 Estrella eliminada');
+            }
+        }
+
+        function addNote() {
+            const newId = Math.max(...notes.map(n => n.id), 0) + 1;
+            notes.push({
+                id: newId,
+                text: '',
+                drawing: null,
+                date: new Date().toISOString()
+            });
+            storage.saveNotes(notes);
+            renderNotes();
+            openModal(newId);
+        }
+
+        // ===============================
+        // CAMBIO DE IMAGEN CENTRAL
+        // ===============================
+        // TODO: Integrar con un servicio de upload (Cloudinary, Firebase Storage)
+        
+        function changeImage() {
+            const urls = [
+                'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=400&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=400&h=400&fit=crop',
+                'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=400&h=400&fit=crop'
+            ];
+            const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+            document.getElementById('centralImage').src = randomUrl;
+
+            // Para permitir upload del usuario:
+            // 1. Agregar: <input type="file" id="imageUpload" accept="image/*" style="display:none">
+            // 2. En changeImage(): document.getElementById('imageUpload').click()
+            // 3. Manejar el evento change para subir a Firebase Storage
+        }
+
+        // ===============================
+        // NOTIFICACIONES
+        // ===============================
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-24 right-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-2xl shadow-2xl z-50 animate-bounce';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 2000);
+        }
+
+        // ===============================
+        // INICIALIZACIÓN
+        // ===============================
+        
+        renderNotes();
+    </script>
+</body>
+</html>
