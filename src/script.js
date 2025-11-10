@@ -6,17 +6,7 @@
     const hint = document.getElementById('hint');
 
       // Texto de la carta
-    const message = `Melisa,
-
-A veces las palabras parecen pequeñas al intentar describir lo que siento por ti; aun así, las elijo con cuidado porque tú mereces cada una.
-
-Eres la calma en mis mañanas, la risa que invade mis días y la certeza que acompaña mis pasos cuando todo tiembla.
-
-Esta carta es un instante detenido para agradecerte por ser como eres y por hacer que todo parezca posible.
-
-Guarda este papel como recuerdo de un te amo que no conoce tiempo ni distancia.
-
-Con todo mi cariño,`;
+    const message = `Melisa,...,`;
 
     let typed = false;
 

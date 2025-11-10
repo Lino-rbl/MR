@@ -1,48 +1,54 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Carta para Melisa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/src/style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Carta para Melisa</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/style.css" />
+<link rel="icon" type="image/svg+xml" href="%BASE_URL%vite.svg" />
 </head>
 <body>
-  <main class="stage" role="main">
+    <header class="site-header" role="banner">
+        <div class="header-inner">
+            <h1 class="brand" title="For You">For You</h1>
+        </div>
+    </header>
+<main class="stage page-offset" role="main">
     <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Haz clic para abrir la carta para Melisa">
-      <div class="env-body">
+    <div class="env-body">
         <div class="env-address">
-          <div class="to">Para:</div>
-          <div>Melisa</div>
+        <div class="to">Para:</div>
+        <div>Melisa</div>
         </div>
         <div class="env-flap"></div>
         <div class="seal"></div>
-      </div>
+    </div>
     </div>
 
     <div class="hint" id="hint" aria-live="polite">
-      Haz clic en el sobre para abrir la carta
+    Haz clic en el sobre para abrir la carta
     </div>
-  </main>
+</main>
 
-  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
     <button class="close-btn" id="closeBtn" aria-label="Cerrar carta">&times;</button>
     <div class="letter-container">
-      <div class="burnt-paper">
+    <div class="burnt-paper">
         <div class="flower top-left">🌸</div>
         <div class="flower bottom-right">🥀</div>
         <div class="letter-content">
-          <h1 class="letter-header" id="letterTitle">Melisa, te amo</h1>
-          <div class="letter-subtitle">Tibi praesertim — para ti especialmente</div>
-          <div class="letter-body" id="letterBody"></div>
-          <div class="letter-signature">
+        <h1 class="letter-header" id="letterTitle">Melisa</h1>
+        <div class="letter-subtitle">Tibi praesertim</div>
+        <div class="letter-body" id="letterBody"></div>
+        <div class="letter-signature">
             <div class="signature">Lino</div>
             <div class="date">10 de Noviembre, 2025</div>
-          </div>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
-  <script type="module" src="/src/script.js"></script>
+    </div>
+</div>
+<script type="module" src="/src/script.js"></script>
 </body>
 </html>
