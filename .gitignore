@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 Prueba_experimental
+local
+README.md

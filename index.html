@@ -1,133 +1,48 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" href="./src/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PARA....</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Carta para Melisa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
 </head>
-<body class="min-h-screen py-12 px-4">
-    
-    <!-- Botón de cambio de tema -->
-    <button id="themeToggle" class="theme-toggle fixed top-6 right-6 w-14 h-14 rounded-full z-50 flex items-center justify-center text-2xl shadow-lg">
-        🌙
-    </button>
-
-    <!-- Contenedor principal -->
-    <div class="max-w-7xl mx-auto">
-        
-        <!-- Título -->
-        <h1 class="text-5xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            ✨ For: Meli ✨
-        </h1>
-        <br>
-
-        <!-- Sección superior: Cards informativas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            
-            <!-- Card informativa 1 -->
-            <div class="star-card rounded-3xl p-6 shadow-2xl">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-4xl">🌟</span>
-                    <h3 class="text-xl font-semibold"><strong>Inspiración Diaria</strong></h3>
-                </div>
-                <p class="text-gray-300 text-sm">
-                    <strong>El universo está hecho de historias, no de átomos.</strong> 
-                </p>
-            </div>
-
-            <!-- Card informativa 2 -->
-            <div class="star-card rounded-3xl p-6 shadow-2xl">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-4xl">💫</span>
-                    <h3 class="text-xl font-semibold">Tus Constelaciones</h3>
-                </div>
-                <p class="text-gray-300 text-sm">
-                    <span id="noteCount">0</span> estrellas creadas en tu nébula personal.
-                </p>
-            </div>
-
+<body>
+  <main class="stage" role="main">
+    <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Haz clic para abrir la carta para Melisa">
+      <div class="env-body">
+        <div class="env-address">
+          <div class="to">Para:</div>
+          <div>Melisa</div>
         </div>
-
-        <!-- Centro circular (Dashboard) -->
-        <div class="flex justify-center mb-12">
-            <div class="central-hub rounded-full w-72 h-72 flex items-center justify-center relative overflow-hidden">
-                <img 
-                    id="centralImage" 
-                    src="" 
-                    class="w-full h-full object-cover rounded-full"
-                />
-                <!-- Botón para cambiar imagen (futuro: integrar upload) -->
-                <button onclick="changeImage()" class="absolute bottom-4 right-4 bg-white bg-opacity-20 backdrop-blur-md p-3 rounded-full hover:bg-opacity-30 transition">
-                    📷
-                </button>
-            </div>
-            
-        </div>
-
-        <!-- Sección inferior: Cards editables -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="notesContainer">
-            <!-- Las notas se generarán dinámicamente -->
-        </div>
-
-        <!-- Botón flotante para agregar nota -->
-        <button onclick="addNote()" class="btn fixed bottom-8 right-8 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-3xl z-40">
-            ✨
-        </button>
-
+        <div class="env-flap"></div>
+        <div class="seal"></div>
+      </div>
     </div>
 
-    <!-- Modal para editar nota -->
-    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="star-card rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Editar Estrella</h2>
-                <button onclick="closeModal()" class="text-3xl hover:rotate-90 transition">&times;</button>
-            </div>
-
-            <!-- Textarea para texto -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold mb-2">📝 Tu historia del día</label>
-                <textarea 
-                    id="noteText" 
-                    class="w-full h-32 rounded-xl p-4 transition"
-                    placeholder="Escribe tus pensamientos aquí..."
-                ></textarea>
-            </div>
-
-            <!-- Canvas para dibujo -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold mb-2">🎨 Tu dibujo cósmico</label>
-                <div class="relative">
-                    <canvas 
-                        id="drawingCanvas" 
-                        class="drawing-canvas w-full h-64 border border-gray-600"
-                        width="600"
-                        height="300"
-                    ></canvas>
-                    <div class="flex gap-2 mt-2">
-                        <button onclick="clearCanvas()" class="px-4 py-2 bg-red-500 bg-opacity-30 rounded-lg hover:bg-opacity-50 transition text-sm">
-                            🗑️ Limpiar
-                        </button>
-                        <input type="color" id="brushColor" value="#A259FF" class="w-12 h-10 rounded cursor-pointer">
-                        <input type="range" id="brushSize" min="1" max="20" value="3" class="flex-1">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botones de acción -->
-            <div class="flex gap-3">
-                <button onclick="saveNote()" class="btn flex-1 py-3 rounded-xl font-semibold">
-                    💾 Guardar
-                </button>
-                <button onclick="deleteNote()" class="bg-red-500 bg-opacity-30 flex-1 py-3 rounded-xl font-semibold hover:bg-opacity-50 transition">
-                    🗑️ Eliminar
-                </button>
-            </div>
-        </div>
+    <div class="hint" id="hint" aria-live="polite">
+      Haz clic en el sobre para abrir la carta
     </div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+  </main>
+
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+    <button class="close-btn" id="closeBtn" aria-label="Cerrar carta">&times;</button>
+    <div class="letter-container">
+      <div class="burnt-paper">
+        <div class="flower top-left">🌸</div>
+        <div class="flower bottom-right">🥀</div>
+        <div class="letter-content">
+          <h1 class="letter-header" id="letterTitle">Melisa, te amo</h1>
+          <div class="letter-subtitle">Tibi praesertim — para ti especialmente</div>
+          <div class="letter-body" id="letterBody"></div>
+          <div class="letter-signature">
+            <div class="signature">Lino</div>
+            <div class="date">10 de Noviembre, 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/script.js"></script>
+</body>
 </html>
