@@ -1,4 +1,14 @@
-            :root{
+                /* =========================================
+                    Hoja de estilos principal
+                    Notas:
+                    - Variables CSS definen paleta y tonos temáticos.
+                    - Estructura general: header fijo, escena central (sobre), modal carta.
+                    - Prefijos y gradientes para dar efecto antiguo y romántico.
+                    - Secciones comentadas para rápida navegación.
+                    ========================================= */
+
+                /* Paleta base en variables para fácil ajuste de colores */
+                :root{
             --bg:#2a2520;
             --paper:#e8dcc8;
             --burnt:#3d2817;
@@ -7,9 +17,11 @@
             --seal:#9b1212;
             }
 
-            *{box-sizing:border-box}
-            html,body{height:100%;margin:0;padding:0}
+                /* Reset mínimo + box-sizing consistente */
+                *{box-sizing:border-box}
+                html,body{height:100%;margin:0;padding:0}
             
+            /* Fondo general y tipografía principal */
             body{
             font-family:"Cormorant Garamond", serif;
             background:radial-gradient(circle at 50% 50%, #3d362f, #1a1512);
@@ -95,7 +107,8 @@
             padding-top:90px;
             }
 
-            /* Contenedor principal */
+            /* ================= ESCENARIO PRINCIPAL ================= */
+            /* Contenedor principal que centra el sobre en pantalla */
             .stage{
             width:100%;
             display:flex;
@@ -105,7 +118,8 @@
             padding:20px;
             }
 
-            /* Sobre realista */
+            /* ================= SOBRE (ENVELOPE) ================= */
+            /* Componente interactivo que se abre para mostrar la carta */
             .envelope {
             position:relative;
             width:420px;
@@ -266,7 +280,8 @@
             50% { opacity:0.8 }
             }
 
-            /* Modal overlay */
+            /* ================= MODAL/CARTA ================= */
+            /* Overlay oscuro que aloja la carta antigua */
             .modal-overlay{
             position:fixed;
             inset:0;
@@ -275,8 +290,10 @@
             align-items:center;
             justify-content:center;
             z-index:1000;
-            padding:20px;
+            --modal-pad:20px;
+            padding:var(--modal-pad);
             animation: fadeIn 0.4s ease;
+            overscroll-behavior:contain;
             }
 
             .modal-overlay.active{
@@ -288,13 +305,16 @@
             to { opacity:1 }
             }
 
-            /* Carta antigua quemada */
+            /* Contenedor desplazable interno de la carta */
             .letter-container{
             position:relative;
             width:100%;
             max-width:700px;
-            max-height:90vh;
+            /* Altura efectiva resta el padding del overlay para evitar scroll extra */
+            max-height:calc(100vh - (var(--modal-pad) * 2));
             overflow:auto;
+            -webkit-overflow-scrolling:touch;
+            scrollbar-gutter:stable both-edges;
             animation: letterAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             }
 
@@ -309,6 +329,7 @@
             }
             }
 
+            /* Carta: papel con bordes quemados y textura */
             .burnt-paper{
             position:relative;
             background: linear-gradient(135deg, #f4e8d8 0%, #e8dcc8 50%, #dcc9b0 100%);
@@ -460,7 +481,8 @@
             transform:rotate(25deg);
             }
 
-            /* Responsive */
+            /* ================= MEDIA QUERIES ================= */
+            /* Ajustes de escala y tipografía en dispositivos más pequeños */
             @media (max-width:768px){
             .header-inner{padding:12px 20px;gap:28px}
             .brand{font-size:38px}
@@ -520,7 +542,7 @@
             }
             }
 
-            /* Scrollbar personalizado */
+            /* ================= SCROLLBAR PERSONALIZADO ================= */
             .letter-container::-webkit-scrollbar{
             width:10px;
             }

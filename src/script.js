@@ -6,7 +6,7 @@
     const hint = document.getElementById('hint');
 
       // Texto de la carta
-    const message = `Melisa,...,`;
+    const message = `Melisa, ,`;
 
     let typed = false;
 
