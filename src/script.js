@@ -6,24 +6,36 @@
     const hint = document.getElementById('hint');
 
       // Texto de la carta
-    const message = `Melisa, ,`;
+      // `messageText` se usa para el efecto de escritura (sin HTML visible)
+      const messageText = `You, 
+      Hola HOLA hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
+          
+            COQUETA`;
+
+      // `messageHTML` contiene el HTML final con el enlace (se inyecta al completar)
+      const messageHTML = `You, 
+      Hola HOLA hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
+          
+              <div style="text-align:center;"><a href="..." target="_blank" rel="noopener noreferrer">....</a></div>`;
 
     let typed = false;
 
       // Efecto de escritura
-    function typeText(element, text, speed = 20) {
-        let i = 0;
-        element.textContent = "";
-        
-    function type() {
+    function typeText(element, text, speed = 20, onComplete) {
+      let i = 0;
+      element.textContent = "";
+
+      function type() {
         if (i < text.length) {
-            element.textContent += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          if (typeof onComplete === 'function') onComplete();
         }
-    }
-        
-        type();
+      }
+
+      type();
     }
 
       // Abrir modal
@@ -33,10 +45,13 @@
         document.body.style.overflow = 'hidden';
         
     if (!typed) {
-        setTimeout(() => {
-            typeText(letterBody, message, 15);
-            typed = true;
-        }, 300);
+      setTimeout(() => {
+        typeText(letterBody, messageText, 15, () => {
+          // Reemplaza el contenido final por HTML para que el enlace sea clicable
+          letterBody.innerHTML = messageHTML;
+        });
+        typed = true;
+      }, 300);
     }
         
         closeBtn.focus();
