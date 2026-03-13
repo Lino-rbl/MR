@@ -2,7 +2,7 @@
    RIFA — app.js
    ============================================= */
 
-const TOTAL = 5999;
+const TOTAL = 999;
 
 // --- Estado ---
 let taken = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
@@ -28,7 +28,7 @@ const printBtn   = document.getElementById('print-btn');
  * @returns {string}
  */
 function pad(n) {
-  return String(n).padStart(4, '0');
+  return String(n).padStart(3, '0');
 }
 
 /**
@@ -69,7 +69,7 @@ function formatDate() {
 function renderGrid(filter = '') {
   grid.innerHTML = '';
 
-  for (let i = 1; i <= TOTAL; i++) {
+  for (let i = 0; i <= TOTAL; i++) {
     const str = pad(i);
     if (filter && !str.includes(filter)) continue;
 
