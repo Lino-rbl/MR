@@ -23,7 +23,7 @@ const printBtn   = document.getElementById('print-btn');
 // -----------------------------------------------
 
 /**
- * Formatea un número como string de 4 dígitos con ceros a la izquierda.
+ * Formatea un número como string de 3 dígitos con ceros a la izquierda.
  * @param {number} n
  * @returns {string}
  */
