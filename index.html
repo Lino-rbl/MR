@@ -1,54 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Carta para Ypu</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/src/style.css" />
-<link rel="icon" type="image/svg+xml" href="%BASE_URL%vite.svg" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rifa — Elige tus números</title>
+  <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-    <header class="site-header" role="banner">
-        <div class="header-inner">
-            <h1 class="brand" title="For You">For You</h1>
-        </div>
+
+  <div id="app">
+    <header class="page-header">
+      <h1>Rifa</h1>
+      <p class="subtitle">Selecciona exactamente 4 números del <strong>0001</strong> al <strong>5999</strong> para generar tu boleto.</p>
     </header>
-<main class="stage page-offset" role="main">
-    <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Haz clic para abrir la carta para Melisa">
-    <div class="env-body">
-        <div class="env-address">
-        <div class="to">Para:</div>
-        <div>For you</div>
-        </div>
-        <div class="env-flap"></div>
-        <div class="seal"></div>
-    </div>
-    </div>
 
-    <div class="hint" id="hint" aria-live="polite">
-    Haz clic en el sobre para abrir la carta
-    </div>
-</main>
+    <section class="selection-section">
+      <div class="selection-bar" id="sel-bar">
+        <span class="sel-hint">No has seleccionado ningún número aún.</span>
+      </div>
+    </section>
 
-<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
-    <button class="close-btn" id="closeBtn" aria-label="Cerrar carta">&times;</button>
-    <div class="letter-container">
-    <div class="burnt-paper">
-        <div class="flower top-left">🌸</div>
-        <div class="flower bottom-right">🥀</div>
-        <div class="letter-content">
-        <h1 class="letter-header" id="letterTitle">Name</h1>
-        <div class="letter-subtitle">Especially for you</div>
-        <div class="letter-body" id="letterBody"></div>
-        <div class="letter-signature">
-            <div class="signature">Alguien</div>
-            <div class="date">Fecha</div>
+    <section class="controls-section">
+      <input type="number" id="search" placeholder="Buscar número (ej. 1234)..." min="1" max="5999" />
+      <div class="controls-right">
+        <span class="counter-badge" id="counter">0 / 4 seleccionados</span>
+        <button class="btn-main" id="gen-btn" disabled>Generar boleto</button>
+      </div>
+    </section>
+
+    <section class="grid-section">
+      <div class="grid-header">
+        Números disponibles — haz clic para seleccionar
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </div>
+
+  <!-- Ticket overlay -->
+  <div id="ticket-overlay">
+    <div id="ticket-box">
+      <div class="ticket-header">
+        <div class="ticket-logo">BOLETO OFICIAL</div>
+        <h2>Tu boleto de rifa</h2>
+        <p id="ticket-date"></p>
+      </div>
+      <div class="ticket-divider">
+        <span>★</span>
+      </div>
+      <div class="ticket-nums" id="ticket-nums"></div>
+      <div class="ticket-footer">
+        <p class="ticket-folio" id="ticket-id"></p>
+        <div class="ticket-actions no-print">
+          <button class="btn-secondary" id="close-btn">Cerrar</button>
+          <button class="btn-main" id="print-btn">Imprimir boleto</button>
         </div>
-        </div>
+      </div>
     </div>
-    </div>
-</div>
-<script type="module" src="/src/script.js"></script>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
