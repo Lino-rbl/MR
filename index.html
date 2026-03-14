@@ -4,14 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rifa — Elige tus números</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
 
   <div id="app">
     <header class="page-header">
-      <h1>Rifa</h1>
-      <p class="subtitle">Selecciona exactamente 4 números del <strong>000</strong> al <strong>999</strong> para generar tu boleto.</p>
+      <div class="header-inner">
+        <div class="header-badge">OFICIAL</div>
+        <h1>Rifa <span class="year">2025</span></h1>
+        <p class="subtitle">Selecciona exactamente <strong>4 números</strong> del <strong>000</strong> al <strong>999</strong></p>
+      </div>
     </header>
 
     <section class="selection-section">
@@ -21,7 +26,7 @@
     </section>
 
     <section class="controls-section">
-      <input type="number" id="search" placeholder="Buscar número (ej. 123)..." min="0" max="999" />
+      <input type="number" id="search" placeholder="Buscar número…" min="0" max="999" />
       <div class="controls-right">
         <span class="counter-badge" id="counter">0 / 4 seleccionados</span>
         <button class="btn-main" id="gen-btn" disabled>Generar boleto</button>
@@ -29,14 +34,32 @@
     </section>
 
     <section class="grid-section">
-      <div class="grid-header">
-        Números disponibles — haz clic para seleccionar
-      </div>
+      <div class="grid-header">Números disponibles — toca para seleccionar</div>
       <div class="grid" id="grid"></div>
     </section>
   </div>
 
-  <!-- Ticket overlay -->
+  <!-- ── Modal: pedir nombre ── -->
+  <div id="name-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3>¿A nombre de quién va el boleto?</h3>
+      <p class="modal-sub">Este dato queda registrado junto con tus números.</p>
+      <input
+        type="text"
+        id="buyer-name"
+        placeholder="Tu nombre completo…"
+        maxlength="80"
+        autocomplete="name"
+      />
+      <div id="name-error" class="field-error" style="display:none">Por favor ingresa tu nombre.</div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+        <button class="btn-main" id="modal-confirm">Confirmar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Ticket overlay ── -->
   <div id="ticket-overlay">
     <div id="ticket-box">
       <div class="ticket-header">
@@ -44,20 +67,23 @@
         <h2>Tu boleto de rifa</h2>
         <p id="ticket-date"></p>
       </div>
-      <div class="ticket-divider">
-        <span>★</span>
-      </div>
+      <div class="ticket-divider"><span>★</span></div>
       <div class="ticket-nums" id="ticket-nums"></div>
+      <div class="ticket-buyer" id="ticket-buyer"></div>
       <div class="ticket-footer">
         <p class="ticket-folio" id="ticket-id"></p>
         <div class="ticket-actions no-print">
           <button class="btn-secondary" id="close-btn">Cerrar</button>
-          <button class="btn-main" id="print-btn">Imprimir boleto</button>
+          <button class="btn-main" id="save-btn">⬇ Guardar imagen</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Toast de confirmación -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script type="module" src="./src/app.js"></script>
 </body>
 </html>
