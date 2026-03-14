@@ -263,24 +263,29 @@ async function saveToBackend(data) {
 // -----------------------------------------------
 
 saveBtn.addEventListener('click', async () => {
-  const ticket = document.getElementById('ticket-box');
-
-  // Ocultar botones antes de capturar
+  const ticket  = document.getElementById('ticket-box');
   const actions = ticket.querySelector('.ticket-actions');
   actions.style.display = 'none';
 
+  // Esperar un frame para que el DOM se actualice
+  await new Promise(r => requestAnimationFrame(r));
+
   try {
-    const canvas = await html2canvas(ticket, {
-      scale:           3,
-      useCORS:         true,
-      backgroundColor: '#ffffff',
+    const blob = await domtoimage.toJpeg(ticket, {
+      quality: 0.95,
+      scale:   3,
+      bgcolor: '#ffffff',
     });
 
     const folio = document.getElementById('ticket-id').textContent.replace('Folio: ', '');
     const link  = document.createElement('a');
     link.download = `boleto-${folio}.jpg`;
-    link.href     = canvas.toDataURL('image/jpeg', 0.95);
+    link.href     = blob;
     link.click();
+
+  } catch (err) {
+    console.error('Error al generar imagen:', err);
+    showToast('⚠ No se pudo generar la imagen.', 'warn');
   } finally {
     actions.style.display = '';
   }
