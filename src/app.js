@@ -2,8 +2,8 @@
    RIFA — app.js
    ============================================= */
 
-// ⚠️ Cambia esta URL por la de tu proyecto en Vercel
-const API_URL = 'https://TU-PROYECTO.vercel.app/api/boletos';
+//  Cambia esta URL por la de tu proyecto en Vercel
+const API_URL = 'https://rifa-psi-ten.vercel.app/api/boletos';
 
 const TOTAL = 999;
 
