@@ -44,6 +44,9 @@ body {
 /* ---- HEADER ---- */
 .page-header {
   margin-bottom: 1.75rem;
+  text-align: center;
+
+
 }
 
 .page-header h1 {
@@ -67,6 +70,7 @@ body {
 /* ---- SELECTION BAR ---- */
 .selection-section {
   margin-bottom: 1rem;
+  
 }
 
 .selection-bar {
@@ -75,11 +79,13 @@ body {
   gap: 8px;
   align-items: center;
   min-height: 40px;
+  
 }
 
 .sel-hint {
   font-size: 13px;
   color: var(--text-hint);
+
 }
 
 .sel-chip {
@@ -533,3 +539,14 @@ body {
 }
 .toast--warn { background: #c77700; }
 .toast--ok   { background: #1d6f42; }
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: .5rem;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
