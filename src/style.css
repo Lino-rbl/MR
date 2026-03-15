@@ -9,6 +9,7 @@
 }
 
 :root {
+  /*--green-main:   #1bbe44;*/
   --blue-main:    #185FA5;
   --blue-dark:    #0C447C;
   --blue-light:   #E6F1FB;
@@ -38,7 +39,7 @@ body {
 #app {
   max-width: 960px;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 1.5rem .5rem 1rem;
 }
 
 /* ---- HEADER ---- */
@@ -206,7 +207,7 @@ body {
 
 /* ---- NUMBER GRID ---- */
 .grid-section {
-  background: var(--bg-card);
+  background: var(--green-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
@@ -466,12 +467,14 @@ body {
 }
 
 .modal-box h3 {
+  text-align: center;
   margin: 0 0 .25rem;
   font-size: 1.25rem;
   font-weight: 700;
 }
 
 .modal-sub {
+  
   color: #666;
   font-size: .88rem;
   margin: 0 0 1.1rem;
