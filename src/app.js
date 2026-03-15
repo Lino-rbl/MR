@@ -8,7 +8,26 @@ const API_URL = 'https://rifa-psi-ten.vercel.app/api/boletos';
 const TOTAL = 999;
 
 // --- Estado ---
-let taken    = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
+//let taken    = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
+
+let taken = [];
+
+async function loadTaken() {
+  try {
+    const res = await fetch(`${API_URL}?taken=true`);
+    const data = await res.json();
+    taken = data.taken || [];
+    // Sincronizar localStorage con los datos reales
+    localStorage.setItem('rifa_taken', JSON.stringify(taken));
+  } catch (err) {
+    // Si falla el servidor, usar localStorage como respaldo
+    taken = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
+    console.warn('Usando localStorage como respaldo:', err);
+  } finally {
+    renderGrid();
+    updateUI();
+  }
+}
 let selected = [];
 let pendingNums = []; // números en espera de confirmación de nombre
 
@@ -332,5 +351,6 @@ searchInput.addEventListener('change', () => {
 // -----------------------------------------------
 // Inicialización
 // -----------------------------------------------
-renderGrid();
+//renderGrid();
+loadTaken();
 updateUI();

@@ -30,6 +30,19 @@ export default async function handler(req, res) {
     return res.status(201).json({ ok: true, folio });
   }
 
+    // Agrega este bloque ANTES del GET admin
+  if (req.method === 'GET' && req.query.taken === 'true') {
+    const { data, error } = await supabase
+      .from('boletos')
+      .select('nums');
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    // Aplanar todos los arrays de nums en una sola lista
+    const taken = data.flatMap(b => b.nums);
+    return res.status(200).json({ taken });
+  }
+
   if (req.method === 'GET') {
     const token = req.headers['x-admin-token'];
     if (token !== process.env.ADMIN_TOKEN) {
