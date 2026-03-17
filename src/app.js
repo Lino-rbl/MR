@@ -217,10 +217,10 @@ async function confirmName() {
 
   try {
     await saveToBackend({ name, nums: pendingNums, folio, date });
-    showToast('✔ Boleto registrado correctamente', 'ok');
+    showToast('Boleto registrado correctamente', 'ok');
   } catch (err) {
     console.error('Backend error:', err);
-    showToast('⚠ No se pudo guardar en servidor. Boleto generado localmente.', 'warn');
+    showToast('No se pudo guardar en servidor. Boleto generado localmente.', 'warn');
   }
 
   // Marcar números como tomados
@@ -304,7 +304,7 @@ saveBtn.addEventListener('click', async () => {
 
   } catch (err) {
     console.error('Error al generar imagen:', err);
-    showToast('⚠ No se pudo generar la imagen.', 'warn');
+    showToast('No se pudo generar la imagen.', 'warn');
   } finally {
     actions.style.display = '';
   }
