@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <title>RIFA</title>
+  <!-- reemplaza tus links de Google Fonts por estos -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&display=swap" rel="stylesheet" crossorigin>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+
+  <div id="app">
+    <header class="page-header">
+      <div class="header-inner">
+        <div class="header-badge">RIFA · OFICIAL</div>
+        <h1>Club Ajedrez <span class="year">2026</span></h1>
+        <p class="subtitle">
+          Selecciona exactamente <strong>4 números</strong> del <strong>000</strong> al <strong>999</strong><br><br>
+          · <a href="./index.html" class="prizes-link">ver premios <span class="prizes-link__icon">→</span></a>
+        </p>
+      </div>
+    </header>
+<!--
+    <section class="controls-section">
+      <a class="btn-outline" href="./premios.html">Ver Premios →</a>
+    </section>
+  -->
+    <section class="selection-section">
+      <div class="selection-bar" id="sel-bar">
+        <span class="sel-hint">No has seleccionado ningún número aún.</span>
+      </div>
+    </section>
+
+    <section class="controls-section">
+      <!--<button class="btn-secondary" id="clear-btn">Limpiar selección</button>-->
+      <!--<button class="btn-secondary" id="random-btn">Seleccionar 4 números al azar</button>-->
+      <input type="number" id="search" placeholder="Buscar número…" min="0" max="999" />
+      <div class="controls-right">
+        <span class="counter-badge" id="counter">0 / 4 seleccionados</span>
+        <button class="btn-main" id="gen-btn" disabled>Generar boleto</button>
+      </div>
+    </section>
+
+    <section class="grid-section">
+      <div class="grid-header">Números disponibles — toca para seleccionar</div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </div>
+
+  <!-- ── Modal: pedir nombre ── -->
+  <div id="name-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3>¿A nombre de quién va el boleto?</h3>
+      <p class="modal-sub">Este dato queda registrado junto con tus números.</p>
+      <input
+        type="text"
+        id="buyer-name"
+        placeholder="Tu nombre completo…"
+        maxlength="80"
+        autocomplete="name"
+      />
+      <div id="name-error" class="field-error" style="display:none">Por favor ingresa tu nombre.</div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+        <button class="btn-main" id="modal-confirm">Confirmar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Ticket overlay ── -->
+  <div id="ticket-overlay">
+    <div id="ticket-box">
+      <div class="ticket-header">
+        <div class="ticket-logo">BOLETO OFICIAL</div>
+        <h2>Tu boleto de rifa</h2>
+        <p id="ticket-date"></p>
+      </div>
+      <div class="ticket-divider"><span>★</span></div>
+      <div class="ticket-nums" id="ticket-nums"></div>
+      <div class="ticket-buyer" id="ticket-buyer"></div>
+      <div class="ticket-footer">
+        <p class="ticket-folio" id="ticket-id"></p>
+        <div class="ticket-actions no-print">
+          <button class="btn-secondary" id="close-btn">Cerrar</button>
+          <button class="btn-main" id="save-btn">⬇ Guardar imagen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de confirmación -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+        <div class="footer-socials">
+            <a href="mailto:rifas.linos@gmail.com">
+                Correo electronico
+            </a>
+        </div>
+        <p class="footer-copy">© 2026 - Lino</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/3.4.0/dom-to-image-more.min.js"></script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

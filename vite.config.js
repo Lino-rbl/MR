@@ -9,8 +9,8 @@ export default defineConfig({
       build: {
         rollupOptions: {
           input: {
-            index: resolve(__dirname, 'premios.html'),
-            app: resolve(__dirname, 'index.html'),
+            index: resolve(__dirname, 'index.html'),
+            compra_boletos: resolve(__dirname, 'compra_boletos.html'),
             
           }
         },
