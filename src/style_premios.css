@@ -218,50 +218,6 @@ body {
   gap: 1rem;
 }
 
-/* Especificaciones PC */
-.prize__specs-trigger {
-  margin-top: 1.2rem;
-  font-size: .92rem;
-  font-weight: 600;
-  color: var(--blue-dk);
-  background: var(--blue-lt);
-  border-radius: var(--radius);
-  padding: .7rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(24,95,165,.08);
-  display: inline-block;
-}
-
-.specs-card {
-  display: none;
-  margin-top: .7rem;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  padding: .9rem 1.2rem;
-  box-shadow: 0 2px 8px rgba(24,95,165,.08);
-}
-
-.prize__specs-trigger.open .specs-card {
-  display: block;
-}
-.specs-card__title {
-  font-family: 'Fraunces', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--blue);
-  margin-bottom: .5rem;
-}
-.specs-card__list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.specs-card__list li {
-  font-size: .92rem;
-  color: var(--text);
-  margin-bottom: .3rem;
-}
-
 /* Tarjeta base */
 .prize {
   border: 1px solid var(--border);
@@ -661,4 +617,26 @@ body {
 .prize__img-wrap {
   justify-content: center;
 
+}
+
+.loteria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.loteria__title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.loteria__date {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;  
+}
+
+.as {
+  text-align: center;
 }
