@@ -40,24 +40,38 @@
     <section class="prizes">
         <p class="section-eyebrow">Los premios</p>
 
-        <!-- Primer premio — imagen a sangre -->
-        <div class="prize prize--featured">
-        <div class="prize__cover">
-            <img src="./src/premios.png" alt="Computadora PC" />
-            <div class="prize__cover-label">
-            <span class="prize__n">01</span>
-            <span>Primer Premio</span>
-            </div>
-        </div>
-        <div class="prize__body">
-            <h2 class="prize__title">Computadora PC</h2>
-            <p class="prize__desc">Equipo completo listo para usar. Ideal para trabajo, estudio y entretenimiento.</p>
-            <ul class="prize__chips">
-            <li>⚡ Lista para usar</li>
-            <li>💵 Equivalencia en efectivo si no hay envío</li>
-            </ul>
-        </div>
-        </div>
+                <!-- Primer premio — imagen a sangre -->
+                <div class="prize prize--featured">
+                    <div class="prize__cover">
+                        <img src="./src/premios.png" alt="Computadora PC" id="specs-trigger" style="cursor:pointer;" />
+                        <div class="prize__cover-label">
+                            <span class="prize__n">01</span>
+                            <span>Primer Premio</span>
+                        </div>
+                    </div>
+                    <div class="prize__body">
+                        <h2 class="prize__title">Computadora PC</h2>
+                        <p class="prize__desc">Equipo completo listo para usar. Ideal para trabajo, estudio y entretenimiento.</p>
+                        <ul class="prize__chips">
+                            <li>⚡ Lista para usar</li>
+                            <li>💵 Equivalencia en efectivo si no hay envío</li>
+                        </ul>
+                        <div class="prize__specs-trigger">
+                                
+                            <div class="specs-card" id="specs-card" style="display:none;">
+                                <p class="specs-card__title">IBUYPOWER RGB</p>
+                                <ul class="specs-card__list">
+                                    <li>Intel Core i7 — 5ª Gen</li>
+                                    <li>16 GB RAM DDR4</li>
+                                    <li>480 GB SSD</li>
+                                    <li>1 TB HDD</li>
+                                    <li>RTX 2060 — 8 GB GDDR5</li>
+                                    <li>Fuente de poder 600W</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
         <!-- Segundo premio -->
         <div class="prize">
@@ -114,11 +128,25 @@
         <p class="cta__sub">Apoya al club y llévate un gran premio.</p>
         <a href="./index.html" class="btn-primary btn-primary--light">Ver números disponibles</a>
     </section>
-
+    
     <footer class="footer">
         <p>¿Dudas o pagos?  <a href="mailto:ricardolino004@gmail.com"> - Correo electronico</a></p>
         <p>© 2026 · Club Ajedrez</p>
     </footer>
 
+
+<script>
+    const trigger = document.getElementById('specs-trigger');
+    trigger.addEventListener('click', () => {
+    trigger.classList.toggle('open');
+    });
+
+  // Cierra al hacer clic fuera
+    document.addEventListener('click', (e) => {
+        if (!trigger.contains(e.target)) {
+        trigger.classList.remove('open');
+        }
+    });
+</script>
 </body>
 </html>
