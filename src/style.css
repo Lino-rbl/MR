@@ -29,7 +29,7 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
   min-height: 100vh;
@@ -39,7 +39,7 @@ body {
 #app {
   max-width: 960px;
   margin: 0 auto;
-  padding: 1.5rem .5rem 1rem;
+  padding: 1.5rem .5rem .5rem;
 }
 
 /* ---- HEADER ---- */
@@ -51,8 +51,9 @@ body {
 }
 
 .page-header h1 {
-  font-size: 30px;
-  font-weight: 600;
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--text-primary);
 }
@@ -173,6 +174,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
+  text-decoration: none;
 }
 
 .btn-main:hover:not(:disabled) {
@@ -544,12 +546,68 @@ body {
 .toast--ok   { background: #1d6f42; }
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: .5rem;
-  background: #fff;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border);
+  padding: 1rem 1rem;
   text-align: center;
+  font-size: .8rem;
+  color: var(--text-hint);
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  background: var(--bg-card);
+}
+
+footer a {
+  color: var(--blue-main);
+  text-decoration: none;
+  font-weight: 600;
+}
+footer a:hover { text-decoration: underline; }
+
+.footer-copy { font-size: .78rem; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--blue-main);
+  border: 1.5px solid var(--blue-mid);
+  border-radius: var(--radius-md);
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background .15s, border-color .15s;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-outline:hover {
+  background: var(--blue-light);
+  border-color: var(--blue-main);
+}
+
+.prizes-link {
+  color: var(--blue-main);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: color .15s, gap .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.prizes-link:hover {
+  color: var(--blue-dark);
+}
+
+.prizes-link__icon {
+  display: inline-block;
+  transition: transform .2s ease;
+}
+
+.prizes-link:hover .prizes-link__icon {
+  transform: translateX(4px);
 }
