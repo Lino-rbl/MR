@@ -45,9 +45,9 @@ const buyerInput   = document.getElementById('buyer-name');
 const nameError    = document.getElementById('name-error');
 const modalCancel  = document.getElementById('modal-cancel');
 const modalConfirm = document.getElementById('modal-confirm');
-const emailInput   = document.getElementById('buyer-email');
+
 const phoneInput   = document.getElementById('buyer-phone');
-const emailError   = document.getElementById('email-error');
+
 const phoneError   = document.getElementById('phone-error');
 
 // -----------------------------------------------
@@ -170,10 +170,8 @@ function updateUI() {
 function openNameModal() {
   pendingNums              = [...selected].sort((a, b) => a - b);
   buyerInput.value         = '';
-  emailInput.value         = '';
   phoneInput.value         = '';
   nameError.style.display  = 'none';
-  emailError.style.display = 'none';
   phoneError.style.display = 'none';
   nameModal.classList.add('open');
   setTimeout(() => buyerInput.focus(), 150);
@@ -181,12 +179,11 @@ function openNameModal() {
 
 async function confirmName() {
   const name  = buyerInput.value.trim();
-  const email = emailInput.value.trim();
   const phone = phoneInput.value.trim();
 
   const soloLetras     = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
   const dospalabras    = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
-  const emailValido    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const telefonoValido = /^\+?[\d\s\-]{8,15}$/.test(phone);
 
   let hasError = false;
@@ -205,14 +202,6 @@ async function confirmName() {
     hasError = true;
   } else {
     nameError.style.display = 'none';
-  }
-
-  if (email && !emailValido) {
-    emailError.textContent   = 'Correo no válido.';
-    emailError.style.display = 'block';
-    hasError = true;
-  } else {
-    emailError.style.display = 'none';
   }
 
   if (!phone) {
@@ -239,7 +228,7 @@ async function confirmName() {
   let saved = false;
   for (let intento = 1; intento <= 3; intento++) {
     try {
-      await saveToBackend({ name, email, phone, nums: pendingNums, folio, date });
+      await saveToBackend({ name, phone, nums: pendingNums, folio, date });
       saved = true;
       break;
     } catch (err) {
