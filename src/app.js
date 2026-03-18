@@ -294,53 +294,127 @@ async function saveToBackend(data) {
 // -----------------------------------------------
 
 saveBtn.addEventListener('click', async () => {
-  const ticket  = document.getElementById('ticket-box');
-  const actions = ticket.querySelector('.ticket-actions');
-  actions.style.display = 'none';
+  const nums    = [...document.querySelectorAll('.ticket-num')].map(el => el.textContent.trim());
+  const buyer   = document.getElementById('ticket-buyer').textContent;
+  const folio   = document.getElementById('ticket-id').textContent;
+  const date    = document.getElementById('ticket-date').textContent;
 
-  // Forzar un frame de repintado antes de capturar
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const W = 900, H = 620;
+  const canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
 
-  try {
-    const canvas = await html2canvas(ticket, {
-      scale:           3,
-      useCORS:         true,
-      allowTaint:      true,
-      backgroundColor: '#ffffff',
-      logging:         false,
-      // Necesario en iOS para que capture bien el scroll/posición
-      scrollX:         -window.scrollX,
-      scrollY:         -window.scrollY,
-      windowWidth:     document.documentElement.scrollWidth,
-      windowHeight:    document.documentElement.scrollHeight,
-    });
+  // --- Fondo general ---
+  ctx.fillStyle = '#f5f6f8';
+  ctx.fillRect(0, 0, W, H);
 
-    const folio = document.getElementById('ticket-id').textContent.replace('Folio: ', '');
+  // --- Header azul ---
+  ctx.fillStyle = '#185FA5';
+  roundRect(ctx, 0, 0, W, 200, { tl: 14, tr: 14, bl: 0, br: 0 });
+  ctx.fill();
 
-    // En iOS Safari <a>.click() con download="" no funciona — usamos un fallback
-    canvas.toBlob((blob) => {
-      const url  = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href     = url;
-      link.download = `boleto-${folio}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  // --- "BOLETO OFICIAL" ---
+  ctx.fillStyle = '#B5D4F4';
+  ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '4px';
+  ctx.fillText('BOLETO OFICIAL', W / 2, 60);
 
-      // Si el browser bloqueó la descarga (iOS), abrir en pestaña nueva
-      setTimeout(() => {
-        window.open(url, '_blank');
-        URL.revokeObjectURL(url);
-      }, 300);
-    }, 'image/jpeg', 0.95);
+  // --- Título ---
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 38px "Plus Jakarta Sans", sans-serif';
+  ctx.letterSpacing = '0px';
+  ctx.fillText('Tu boleto de rifa', W / 2, 120);
 
-  } catch (err) {
-    console.error('Error al generar imagen:', err);
-    showToast('No se pudo generar la imagen.', 'warn');
-  } finally {
-    actions.style.display = '';
-  }
+  // --- Fecha ---
+  ctx.fillStyle = '#B5D4F4';
+  ctx.font = '400 22px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText(date, W / 2, 165);
+
+  // --- Divisor con estrella ---
+  ctx.strokeStyle = '#d1d5db';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(60, 228); ctx.lineTo(W/2 - 20, 228); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2 + 20, 228); ctx.lineTo(W - 60, 228); ctx.stroke();
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '18px sans-serif';
+  ctx.fillText('★', W / 2, 234);
+
+  // --- Números ---
+  const boxW = 140, boxH = 140, gap = 24;
+  const totalW = nums.length * boxW + (nums.length - 1) * gap;
+  const startX = (W - totalW) / 2;
+  const startY = 260;
+
+  nums.forEach((num, i) => {
+    const x = startX + i * (boxW + gap);
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, x, startY, boxW, boxH, 10);
+    ctx.fill();
+    ctx.strokeStyle = '#B5D4F4';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, startY, boxW, boxH, 10);
+    ctx.stroke();
+    ctx.fillStyle = '#0C447C';
+    ctx.font = '600 36px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(num, x + boxW / 2, startY + boxH / 2 + 13);
+  });
+
+  // --- Footer blanco ---
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, 0, 430, W, H - 430, { tl: 0, tr: 0, bl: 14, br: 14 });
+  ctx.fill();
+
+  // --- Nombre ---
+  ctx.fillStyle = '#1a1a1a';
+  ctx.font = '700 32px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(buyer, W / 2, 500);
+
+  // --- Folio ---
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '500 20px "DM Mono", monospace';
+  ctx.fillText(folio, W / 2, 565);
+
+  // --- Exportar ---
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const folioClean = folio.replace('Folio: ', '');
+
+  canvas.toBlob((blob) => {
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href     = url;
+    link.download = `boleto-${folioClean}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    if (isIOS) {
+      showToast('Mantén presionada la imagen para guardarla 📲', 'ok');
+      setTimeout(() => { window.open(url, '_blank'); URL.revokeObjectURL(url); }, 300);
+    } else {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  }, 'image/jpeg', 0.95);
 });
+
+// Helper para rectángulos redondeados
+function roundRect(ctx, x, y, w, h, r) {
+  if (typeof r === 'number') r = { tl: r, tr: r, bl: r, br: r };
+  ctx.beginPath();
+  ctx.moveTo(x + r.tl, y);
+  ctx.lineTo(x + w - r.tr, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+  ctx.lineTo(x + w, y + h - r.br);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+  ctx.lineTo(x + r.bl, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+  ctx.lineTo(x, y + r.tl);
+  ctx.quadraticCurveTo(x, y, x + r.tl, y);
+  ctx.closePath();
+}
 
 // -----------------------------------------------
 // WhatsApp
