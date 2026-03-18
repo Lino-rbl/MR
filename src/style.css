@@ -546,7 +546,6 @@ body {
 .toast--ok   { background: #1d6f42; }
 
 footer {
-  position: sticky;
   bottom: 0;
   z-index: 100;
   border-top: 1px solid var(--border);

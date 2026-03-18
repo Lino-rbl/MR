@@ -168,9 +168,13 @@ function updateUI() {
 // -----------------------------------------------
 
 function openNameModal() {
-  pendingNums             = [...selected].sort((a, b) => a - b);
-  buyerInput.value        = '';
-  nameError.style.display = 'none';
+  pendingNums              = [...selected].sort((a, b) => a - b);
+  buyerInput.value         = '';
+  emailInput.value         = '';
+  phoneInput.value         = '';
+  nameError.style.display  = 'none';
+  emailError.style.display = 'none';
+  phoneError.style.display = 'none';
   nameModal.classList.add('open');
   setTimeout(() => buyerInput.focus(), 150);
 }
@@ -231,14 +235,28 @@ async function confirmName() {
   const folio = generateFolio();
   const date  = formatDate();
 
-  try {
-    await saveToBackend({ name, email, phone, nums: pendingNums, folio, date });
-    showToast('Boleto registrado correctamente', 'ok');
-  } catch (err) {
-    console.error('Backend error:', err);
-    showToast('No se pudo guardar en servidor.', 'warn');
+// Reintentar hasta 3 veces
+  let saved = false;
+  for (let intento = 1; intento <= 3; intento++) {
+    try {
+      await saveToBackend({ name, email, phone, nums: pendingNums, folio, date });
+      saved = true;
+      break;
+    } catch (err) {
+      console.warn(`Intento ${intento} fallido:`, err);
+      if (intento < 3) await new Promise(r => setTimeout(r, 1000 * intento));
+    }
   }
 
+  if (!saved) {
+    showToast('No se pudo guardar. Verifica tu conexión e intenta de nuevo.', 'warn');
+    modalConfirm.disabled    = false;
+    modalConfirm.textContent = 'Confirmar →';
+    return; // ← se detiene aquí, no genera boleto
+  }
+
+  // Solo si se guardó correctamente:
+  showToast('Boleto registrado correctamente', 'ok');
   taken = taken.concat(pendingNums);
   saveTaken();
 
