@@ -2,25 +2,20 @@
    RIFA — app.js
    ============================================= */
 
-//  Cambia esta URL por la de tu proyecto en Vercel
 const API_URL = 'https://rifa-psi-ten.vercel.app/api/boletos';
-
-const TOTAL = 999;
+const TOTAL   = 999;
+const WA_TEL  = '5218148071448';
 
 // --- Estado ---
-//let taken    = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
-
 let taken = [];
 
 async function loadTaken() {
   try {
-    const res = await fetch(`${API_URL}?taken=true`);
+    const res  = await fetch(`${API_URL}?taken=true`);
     const data = await res.json();
     taken = data.taken || [];
-    // Sincronizar localStorage con los datos reales
     localStorage.setItem('rifa_taken', JSON.stringify(taken));
   } catch (err) {
-    // Si falla el servidor, usar localStorage como respaldo
     taken = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
     console.warn('Usando localStorage como respaldo:', err);
   } finally {
@@ -28,8 +23,9 @@ async function loadTaken() {
     updateUI();
   }
 }
-let selected = [];
-let pendingNums = []; // números en espera de confirmación de nombre
+
+let selected    = [];
+let pendingNums = [];
 
 // --- Referencias al DOM ---
 const grid        = document.getElementById('grid');
@@ -40,6 +36,7 @@ const searchInput = document.getElementById('search');
 const overlay     = document.getElementById('ticket-overlay');
 const closeBtn    = document.getElementById('close-btn');
 const saveBtn     = document.getElementById('save-btn');
+const waBtn       = document.getElementById('wa-btn');
 const toast       = document.getElementById('toast');
 
 // Modal de nombre
@@ -48,10 +45,10 @@ const buyerInput   = document.getElementById('buyer-name');
 const nameError    = document.getElementById('name-error');
 const modalCancel  = document.getElementById('modal-cancel');
 const modalConfirm = document.getElementById('modal-confirm');
-const emailInput = document.getElementById('buyer-email');
-const phoneInput = document.getElementById('buyer-phone');
-const emailError = document.getElementById('email-error');
-const phoneError = document.getElementById('phone-error');
+const emailInput   = document.getElementById('buyer-email');
+const phoneInput   = document.getElementById('buyer-phone');
+const emailError   = document.getElementById('email-error');
+const phoneError   = document.getElementById('phone-error');
 
 // -----------------------------------------------
 // Utilidades
@@ -76,7 +73,6 @@ function formatDate() {
   return `${fecha} · ${hora}`;
 }
 
-/** Muestra un mensaje flotante por 3 segundos */
 function showToast(msg, type = 'ok') {
   toast.textContent = msg;
   toast.className   = `toast toast--${type} toast--visible`;
@@ -169,52 +165,46 @@ function updateUI() {
 
 // -----------------------------------------------
 // Flujo: Generar boleto
-// 1. Click en "Generar boleto" → abrir modal de nombre
-// 2. Confirmar nombre → guardar en backend + mostrar boleto
 // -----------------------------------------------
 
-/** Paso 1: abre el modal de nombre */
 function openNameModal() {
-  pendingNums        = [...selected].sort((a, b) => a - b);
-  buyerInput.value   = '';
+  pendingNums             = [...selected].sort((a, b) => a - b);
+  buyerInput.value        = '';
   nameError.style.display = 'none';
   nameModal.classList.add('open');
   setTimeout(() => buyerInput.focus(), 150);
 }
 
-/** Paso 2: valida nombre y lanza confirmación */
 async function confirmName() {
   const name  = buyerInput.value.trim();
   const email = emailInput.value.trim();
   const phone = phoneInput.value.trim();
 
-  // Validaciones
-  const soloLetras  = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
-  const dospalabras = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const soloLetras     = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
+  const dospalabras    = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
+  const emailValido    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const telefonoValido = /^\+?[\d\s\-]{8,15}$/.test(phone);
 
   let hasError = false;
 
   if (!name) {
-    nameError.textContent = 'Por favor ingresa tu nombre.';
+    nameError.textContent   = 'Por favor ingresa tu nombre.';
     nameError.style.display = 'block';
     hasError = true;
   } else if (!soloLetras) {
-    nameError.textContent = 'Solo letras, sin números ni símbolos.';
+    nameError.textContent   = 'Solo letras, sin números ni símbolos.';
     nameError.style.display = 'block';
     hasError = true;
   } else if (!dospalabras) {
-    nameError.textContent = 'Ingresa nombre y apellido.';
+    nameError.textContent   = 'Ingresa nombre y apellido.';
     nameError.style.display = 'block';
     hasError = true;
   } else {
     nameError.style.display = 'none';
   }
 
-  // Reemplaza el bloque de validación del email por este:
   if (email && !emailValido) {
-    emailError.textContent = 'Correo no válido.';
+    emailError.textContent   = 'Correo no válido.';
     emailError.style.display = 'block';
     hasError = true;
   } else {
@@ -222,11 +212,11 @@ async function confirmName() {
   }
 
   if (!phone) {
-    phoneError.textContent = 'Por favor ingresa tu teléfono.';
+    phoneError.textContent   = 'Por favor ingresa tu teléfono.';
     phoneError.style.display = 'block';
     hasError = true;
   } else if (!telefonoValido) {
-    phoneError.textContent = 'Teléfono no válido (mín. 8 dígitos).';
+    phoneError.textContent   = 'Teléfono no válido (mín. 8 dígitos).';
     phoneError.style.display = 'block';
     hasError = true;
   } else {
@@ -264,7 +254,6 @@ async function confirmName() {
   updateUI();
 }
 
-/** Rellena y muestra el overlay del boleto */
 function renderTicket({ nums, name, folio, date }) {
   document.getElementById('ticket-nums').innerHTML = nums
     .map(n => `<div class="ticket-num">${pad(n)}</div>`)
@@ -278,13 +267,9 @@ function renderTicket({ nums, name, folio, date }) {
 }
 
 // -----------------------------------------------
-// Backend: guardar boleto en Vercel
+// Backend
 // -----------------------------------------------
 
-/**
- * Envía el boleto al endpoint de Vercel.
- * @param {{ name: string, nums: number[], folio: string, date: string }} data
- */
 async function saveToBackend(data) {
   const res = await fetch(API_URL, {
     method:  'POST',
@@ -309,7 +294,6 @@ saveBtn.addEventListener('click', async () => {
   const actions = ticket.querySelector('.ticket-actions');
   actions.style.display = 'none';
 
-  // Esperar un frame para que el DOM se actualice
   await new Promise(r => requestAnimationFrame(r));
 
   try {
@@ -334,6 +318,29 @@ saveBtn.addEventListener('click', async () => {
 });
 
 // -----------------------------------------------
+// WhatsApp
+// -----------------------------------------------
+
+function abrirWhatsApp() {
+  const nombre  = document.getElementById('ticket-buyer').textContent;
+  const folio   = document.getElementById('ticket-id').textContent.replace('Folio: ', '');
+  const numeros = [...document.querySelectorAll('.ticket-num')].map(el => el.textContent.trim());
+
+  const msg =
+`¡Hola! Quiero confirmar mi boleto de rifa.
+
+*Nombre:* ${nombre}
+*Números:* ${numeros.join(', ')}
+*Folio:* ${folio}
+
+Adjunto mi comprobante de pago de $150 MXN.`;
+
+  window.open(`https://wa.me/${WA_TEL}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+waBtn.addEventListener('click', abrirWhatsApp);
+
+// -----------------------------------------------
 // Eventos
 // -----------------------------------------------
 
@@ -346,7 +353,6 @@ modalCancel.addEventListener('click', () => {
   pendingNums = [];
 });
 
-// Enter en el input de nombre también confirma
 buyerInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') confirmName();
 });
@@ -374,6 +380,5 @@ searchInput.addEventListener('change', () => {
 // -----------------------------------------------
 // Inicialización
 // -----------------------------------------------
-//renderGrid();
 loadTaken();
 updateUI();

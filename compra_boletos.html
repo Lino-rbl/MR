@@ -6,7 +6,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <title>RIFA</title>
-  <!-- reemplaza tus links de Google Fonts por estos -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet" crossorigin>
@@ -22,15 +21,11 @@
         <h1>Club Ajedrez <span class="year">2026</span></h1>
         <p class="subtitle">
           Selecciona exactamente <strong>4 números</strong> del <strong>000</strong> al <strong>999</strong><br><br>
-          · <a href="./index.html" class="prizes-link">ver premios <span class="prizes-link__icon">→</span></a>
+          · <a href="./premios.html" class="prizes-link">ver premios <span class="prizes-link__icon">→</span></a>
         </p>
       </div>
     </header>
-<!--
-    <section class="controls-section">
-      <a class="btn-outline" href="./premios.html">Ver Premios →</a>
-    </section>
-  -->
+
     <section class="selection-section">
       <div class="selection-bar" id="sel-bar">
         <span class="sel-hint">No has seleccionado ningún número aún.</span>
@@ -38,8 +33,6 @@
     </section>
 
     <section class="controls-section">
-      <!--<button class="btn-secondary" id="clear-btn">Limpiar selección</button>-->
-      <!--<button class="btn-secondary" id="random-btn">Seleccionar 4 números al azar</button>-->
       <input type="number" id="search" placeholder="Buscar número…" min="0" max="999" />
       <div class="controls-right">
         <span class="counter-badge" id="counter">0 / 4 seleccionados</span>
@@ -72,7 +65,6 @@
         <button class="btn-secondary" id="modal-cancel">Cancelar</button>
         <button class="btn-main" id="modal-confirm">Confirmar →</button>
       </div>
-
     </div>
   </div>
 
@@ -92,6 +84,7 @@
         <div class="ticket-actions no-print">
           <button class="btn-secondary" id="close-btn">Cerrar</button>
           <button class="btn-main" id="save-btn">⬇ Guardar imagen</button>
+          <button class="btn-main" id="wa-btn" style="background:#25D366;">💬 Confirmar por WhatsApp</button>
         </div>
       </div>
     </div>
@@ -101,16 +94,14 @@
   <div id="toast" class="toast" aria-live="polite"></div>
 
   <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-        <div class="footer-socials">
-            <strong><a href="mailto:rifas.linos@gmail.com">
-                Pagos y Confirmaciones
-            </a></strong>
-        </div>
-        <p class="footer-copy">© 2026 - Lino</p>
-    </div>
-  </footer>
+<footer class="footer">
+        <p>¿Dudas o pagos?</p>  
+        <a href="mailto:rifas.linos@gmail.com">Correo electronico</a>
+        <a href="https://wa.me/5218148071448" target="_blank" style="color:#25D366; font-weight:600;">
+        💬 WhatsApp
+        </a>
+        <p>© 2026 · Lino</p>
+    </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/3.4.0/dom-to-image-more.min.js"></script>
   <script type="module" src="./src/app.js"></script>
