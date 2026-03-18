@@ -444,7 +444,7 @@ Buen día, le envío el número de cuenta para transferencias o depósitos:
 157 370 5531
 
 *MercadoPago:*
-183 884 938 262 717
+72 296 901 540 490 7524
 *A nombre de:* Ricardo Bravo Lino
 
 Por favor envía tu comprobante de pago para confirmar tus boletos.`;
