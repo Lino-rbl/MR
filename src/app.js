@@ -448,7 +448,14 @@ function abrirWhatsApp() {
 
 *Nombre:* ${nombre}
 *Números:* ${numeros.join(', ')}
-*Folio:* ${folio}`;
+*Folio:* ${folio}
+
+Buen día, le envío el número de cuenta para transferencias o depósitos:
+*BBVA:* 183884938262717
+*MercadoPago:* 183884938262717
+*A nombre de:* Ricardo Bravo Lino
+
+Por favor envía tu comprobante de pago para confirmar tus boletos.`;
 
   window.open(`https://wa.me/${WA_TEL}?text=${encodeURIComponent(msg)}`, '_blank');
 }
