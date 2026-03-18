@@ -438,7 +438,7 @@ function abrirWhatsApp() {
 *Nombre:* ${nombre}
 *Números:* ${numeros.join(', ')}
 *Folio:* ${folio}
-
+-----------------------------------------
 Buen día, le envío el número de cuenta para transferencias o depósitos:
 *BBVA:*
 157 370 5531
