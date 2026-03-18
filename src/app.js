@@ -451,8 +451,10 @@ function abrirWhatsApp() {
 *Folio:* ${folio}
 
 Buen día, le envío el número de cuenta para transferencias o depósitos:
-*BBVA:* 183884938262717
-*MercadoPago:* 183884938262717
+*BBVA:*
+183884938262717
+
+*MercadoPago:*
 *A nombre de:* Ricardo Bravo Lino
 
 Por favor envía tu comprobante de pago para confirmar tus boletos.`;
