@@ -455,6 +455,7 @@ Buen día, le envío el número de cuenta para transferencias o depósitos:
 183884938262717
 
 *MercadoPago:*
+183884938262717
 *A nombre de:* Ricardo Bravo Lino
 
 Por favor envía tu comprobante de pago para confirmar tus boletos.`;
