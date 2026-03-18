@@ -48,6 +48,10 @@ const buyerInput   = document.getElementById('buyer-name');
 const nameError    = document.getElementById('name-error');
 const modalCancel  = document.getElementById('modal-cancel');
 const modalConfirm = document.getElementById('modal-confirm');
+const emailInput = document.getElementById('buyer-email');
+const phoneInput = document.getElementById('buyer-phone');
+const emailError = document.getElementById('email-error');
+const phoneError = document.getElementById('phone-error');
 
 // -----------------------------------------------
 // Utilidades
@@ -180,35 +184,57 @@ function openNameModal() {
 
 /** Paso 2: valida nombre y lanza confirmación */
 async function confirmName() {
-  const name = buyerInput.value.trim();
+  const name  = buyerInput.value.trim();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
 
-  // Debe contener solo letras, espacios, acentos y caracteres latinos
-  const soloLetras = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
-  // Debe tener al menos dos palabras (nombre y apellido)
+  // Validaciones
+  const soloLetras  = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
   const dospalabras = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const telefonoValido = /^\+?[\d\s\-]{8,15}$/.test(phone);
+
+  let hasError = false;
 
   if (!name) {
     nameError.textContent = 'Por favor ingresa tu nombre.';
     nameError.style.display = 'block';
-    buyerInput.focus();
-    return;
-  }
-  if (!soloLetras) {
-    nameError.textContent = 'El nombre no puede contener números ni símbolos.';
+    hasError = true;
+  } else if (!soloLetras) {
+    nameError.textContent = 'Solo letras, sin números ni símbolos.';
     nameError.style.display = 'block';
-    buyerInput.focus();
-    return;
-  }
-  if (!dospalabras) {
+    hasError = true;
+  } else if (!dospalabras) {
     nameError.textContent = 'Ingresa nombre y apellido.';
     nameError.style.display = 'block';
-    buyerInput.focus();
-    return;
+    hasError = true;
+  } else {
+    nameError.style.display = 'none';
   }
 
-  nameError.style.display = 'none';
+  // Reemplaza el bloque de validación del email por este:
+  if (email && !emailValido) {
+    emailError.textContent = 'Correo no válido.';
+    emailError.style.display = 'block';
+    hasError = true;
+  } else {
+    emailError.style.display = 'none';
+  }
 
-  // Deshabilitar botón mientras se guarda
+  if (!phone) {
+    phoneError.textContent = 'Por favor ingresa tu teléfono.';
+    phoneError.style.display = 'block';
+    hasError = true;
+  } else if (!telefonoValido) {
+    phoneError.textContent = 'Teléfono no válido (mín. 8 dígitos).';
+    phoneError.style.display = 'block';
+    hasError = true;
+  } else {
+    phoneError.style.display = 'none';
+  }
+
+  if (hasError) return;
+
   modalConfirm.disabled    = true;
   modalConfirm.textContent = 'Guardando…';
 
@@ -216,25 +242,22 @@ async function confirmName() {
   const date  = formatDate();
 
   try {
-    await saveToBackend({ name, nums: pendingNums, folio, date });
+    await saveToBackend({ name, email, phone, nums: pendingNums, folio, date });
     showToast('Boleto registrado correctamente', 'ok');
   } catch (err) {
     console.error('Backend error:', err);
-    showToast('No se pudo guardar en servidor. Boleto generado localmente.', 'warn');
+    showToast('No se pudo guardar en servidor.', 'warn');
   }
 
-  // Marcar números como tomados
   taken = taken.concat(pendingNums);
   saveTaken();
 
-  // Cerrar modal y mostrar boleto
   nameModal.classList.remove('open');
   modalConfirm.disabled    = false;
   modalConfirm.textContent = 'Confirmar →';
 
   renderTicket({ nums: pendingNums, name, folio, date });
 
-  // Limpiar selección
   selected    = [];
   pendingNums = [];
   renderGrid(searchInput.value.trim());

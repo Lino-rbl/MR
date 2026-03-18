@@ -13,15 +13,15 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method === 'POST') {
-    const { name, nums, folio, date } = req.body;
+    const { name, email, phone, nums, folio, date } = req.body;
 
-    if (!name || !Array.isArray(nums) || nums.length !== 4 || !folio) {
-      return res.status(400).json({ error: 'Datos incompletos.' });
-    }
+  if (!name || !email || !phone || !Array.isArray(nums) || nums.length !== 4 || !folio) {
+    return res.status(400).json({ error: 'Datos incompletos.' });
+  }
 
     const { error } = await supabase
       .from('boletos')
-      .insert([{ folio, name, nums, date }]);
+      .insert([{ folio, name, email, phone, nums, date }]);
 
     if (error) {
       return res.status(409).json({ error: error.message });

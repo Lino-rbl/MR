@@ -611,3 +611,26 @@ footer a:hover { text-decoration: underline; }
 .prizes-link:hover .prizes-link__icon {
   transform: translateX(4px);
 }
+
+.modal-box input + .field-error {
+  margin-bottom: .75rem;
+}
+
+.modal-box input[type="email"],
+.modal-box input[type="tel"] {
+  width: 100%;
+  padding: .7rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color .18s;
+  box-sizing: border-box;
+  margin-top: .6rem;
+}
+
+.modal-box input[type="email"]:focus,
+.modal-box input[type="tel"]:focus {
+  outline: none;
+  border-color: var(--blue-main);
+}
