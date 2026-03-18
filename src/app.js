@@ -289,25 +289,50 @@ async function saveToBackend(data) {
 // Guardar boleto como JPG
 // -----------------------------------------------
 
+// -----------------------------------------------
+// Guardar boleto como JPG  — compatible con iPhone
+// -----------------------------------------------
+
 saveBtn.addEventListener('click', async () => {
   const ticket  = document.getElementById('ticket-box');
   const actions = ticket.querySelector('.ticket-actions');
   actions.style.display = 'none';
 
-  await new Promise(r => requestAnimationFrame(r));
+  // Forzar un frame de repintado antes de capturar
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   try {
-    const blob = await domtoimage.toJpeg(ticket, {
-      quality: 0.95,
-      scale:   3,
-      bgcolor: '#ffffff',
+    const canvas = await html2canvas(ticket, {
+      scale:           3,
+      useCORS:         true,
+      allowTaint:      true,
+      backgroundColor: '#ffffff',
+      logging:         false,
+      // Necesario en iOS para que capture bien el scroll/posición
+      scrollX:         -window.scrollX,
+      scrollY:         -window.scrollY,
+      windowWidth:     document.documentElement.scrollWidth,
+      windowHeight:    document.documentElement.scrollHeight,
     });
 
     const folio = document.getElementById('ticket-id').textContent.replace('Folio: ', '');
-    const link  = document.createElement('a');
-    link.download = `boleto-${folio}.jpg`;
-    link.href     = blob;
-    link.click();
+
+    // En iOS Safari <a>.click() con download="" no funciona — usamos un fallback
+    canvas.toBlob((blob) => {
+      const url  = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href     = url;
+      link.download = `boleto-${folio}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Si el browser bloqueó la descarga (iOS), abrir en pestaña nueva
+      setTimeout(() => {
+        window.open(url, '_blank');
+        URL.revokeObjectURL(url);
+      }, 300);
+    }, 'image/jpeg', 0.95);
 
   } catch (err) {
     console.error('Error al generar imagen:', err);
