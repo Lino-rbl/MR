@@ -441,10 +441,10 @@ function abrirWhatsApp() {
 
 Buen día, le envío el número de cuenta para transferencias o depósitos:
 *BBVA:*
-183884938262717
+157 370 5531
 
 *MercadoPago:*
-183884938262717
+183 884 938 262 717
 *A nombre de:* Ricardo Bravo Lino
 
 Por favor envía tu comprobante de pago para confirmar tus boletos.`;
