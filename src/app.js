@@ -331,13 +331,10 @@ function abrirWhatsApp() {
 
 *Nombre:* ${nombre}
 *Números:* ${numeros.join(', ')}
-*Folio:* ${folio}
-
-Adjunto mi comprobante de pago de $150 MXN.`;
+*Folio:* ${folio}`;
 
   window.open(`https://wa.me/${WA_TEL}?text=${encodeURIComponent(msg)}`, '_blank');
 }
-
 waBtn.addEventListener('click', abrirWhatsApp);
 
 // -----------------------------------------------
