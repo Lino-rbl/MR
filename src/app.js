@@ -440,8 +440,8 @@ function abrirWhatsApp() {
 *Folio:* ${folio}
 ---------------------------------------------------------------------
 Buen día, le envío el número de cuenta para transferencias o depósitos:
-*BBVA:*
-157 370 5531
+*Cuenta NU:*
+5101 2521 7769 5990
 
 *MercadoPago:*
 722 969 0154 0490 7524
