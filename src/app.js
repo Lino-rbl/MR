@@ -37,6 +37,7 @@ const overlay     = document.getElementById('ticket-overlay');
 const closeBtn    = document.getElementById('close-btn');
 const saveBtn     = document.getElementById('save-btn');
 const waBtn       = document.getElementById('wa-btn');
+const randomBtn   = document.getElementById('random-btn');
 const toast       = document.getElementById('toast');
 
 // Modal de nombre
@@ -138,6 +139,22 @@ function removeNum(n) {
 }
 
 window.removeNum = removeNum;
+
+function pickRandom() {
+  const available = [];
+  for (let i = 0; i <= TOTAL; i++) {
+    if (!taken.includes(i) && !selected.includes(i)) available.push(i);
+  }
+  const needed = 4 - selected.length;
+  for (let i = 0; i < needed; i++) {
+    if (!available.length) break;
+    const idx = Math.floor(Math.random() * available.length);
+    const n   = available.splice(idx, 1)[0];
+    selected.push(n);
+  }
+  renderGrid(searchInput.value.trim());
+  updateUI();
+}
 
 // -----------------------------------------------
 // Actualización de la UI
@@ -459,7 +476,7 @@ waBtn.addEventListener('click', abrirWhatsApp);
 // -----------------------------------------------
 
 genBtn.addEventListener('click', openNameModal);
-
+randomBtn.addEventListener('click', pickRandom); 
 modalConfirm.addEventListener('click', confirmName);
 
 modalCancel.addEventListener('click', () => {
