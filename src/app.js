@@ -349,13 +349,16 @@ async function confirmBuyer() {
 // ── Backend ───────────────────────────────────
 
 async function saveToBackend(data) {
+  console.log('📤 enviando boleto:', JSON.stringify(data));
   const res = await fetch(API_URL, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(data),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-  return res.json();
+  const text = await res.text();
+  console.log(`📥 respuesta ${res.status}:`, text);
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${text}`);
+  return JSON.parse(text);
 }
 
 // ── WhatsApp ──────────────────────────────────
