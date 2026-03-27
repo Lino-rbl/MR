@@ -1,33 +1,19 @@
 /* =============================================
-   RIFA — app.js
+   RIFA — app.js  (v4 · flujo simplificado)
    ============================================= */
 
 const API_URL = 'https://rifa-psi-ten.vercel.app/api/boletos';
 const TOTAL   = 999;
 const WA_TEL  = '5218148071448';
+const PRECIO  = { 2: 50, 4: 100 };
 
-// --- Estado ---
-let taken = [];
+// ── Estado global ──────────────────────────────
+let taken      = [];   // números vendidos (backend)
+let selected   = [];   // selección en curso
+let ticketType = 4;    // 2 ó 4 números
+let cart       = [];   // [{ nums, tipo }]
 
-async function loadTaken() {
-  try {
-    const res  = await fetch(`${API_URL}?taken=true`);
-    const data = await res.json();
-    taken = data.taken || [];
-    localStorage.setItem('rifa_taken', JSON.stringify(taken));
-  } catch (err) {
-    taken = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
-    console.warn('Usando localStorage como respaldo:', err);
-  } finally {
-    renderGrid();
-    updateUI();
-  }
-}
-
-let selected    = [];
-let pendingNums = [];
-
-// --- Referencias al DOM ---
+// ── DOM ───────────────────────────────────────
 const grid        = document.getElementById('grid');
 const counter     = document.getElementById('counter');
 const selBar      = document.getElementById('sel-bar');
@@ -36,70 +22,100 @@ const searchInput = document.getElementById('search');
 const overlay     = document.getElementById('ticket-overlay');
 const closeBtn    = document.getElementById('close-btn');
 const saveBtn     = document.getElementById('save-btn');
-const waBtn       = document.getElementById('wa-btn');
 const randomBtn   = document.getElementById('random-btn');
 const toast       = document.getElementById('toast');
 
-// Modal de nombre
-const nameModal    = document.getElementById('name-modal');
-const buyerInput   = document.getElementById('buyer-name');
-const nameError    = document.getElementById('name-error');
-const modalCancel  = document.getElementById('modal-cancel');
-const modalConfirm = document.getElementById('modal-confirm');
+// Selector de tipo
+const typeToggle = document.getElementById('type-toggle');
+const typeBtns   = typeToggle.querySelectorAll('.type-btn');
 
-const phoneInput   = document.getElementById('buyer-phone');
+// Modal comprador
+const buyerModal    = document.getElementById('buyer-modal');
+const buyerInput    = document.getElementById('buyer-name');
+const buyerPhone    = document.getElementById('buyer-phone');
+const buyerNameErr  = document.getElementById('name-error');
+const buyerPhoneErr = document.getElementById('phone-error');
+const buyerCancel   = document.getElementById('modal-cancel');
+const buyerConfirm  = document.getElementById('modal-confirm');
 
-const phoneError   = document.getElementById('phone-error');
+// Carrito
+const cartBar     = document.getElementById('cart-bar');
+const cartCount   = document.getElementById('cart-count');
+const cartTotalEl = document.getElementById('cart-total');
+const cartPanel   = document.getElementById('cart-panel');
+const cartItems   = document.getElementById('cart-items');
+const cartSummary = document.getElementById('cart-summary');
+const cartWaBtn   = document.getElementById('cart-wa-btn');
+const cartClose   = document.getElementById('cart-close');
+const cartClear   = document.getElementById('cart-clear');
 
-// -----------------------------------------------
-// Utilidades
-// -----------------------------------------------
+// ── Utilidades ────────────────────────────────
 
-function pad(n) {
-  return String(n).padStart(3, '0');
-}
-
-function saveTaken() {
-  localStorage.setItem('rifa_taken', JSON.stringify(taken));
-}
-
-function generateFolio() {
-  return 'F-' + Date.now().toString(36).toUpperCase().slice(-6);
-}
-
+function pad(n) { return String(n).padStart(3, '0'); }
+function saveTaken() { localStorage.setItem('rifa_taken', JSON.stringify(taken)); }
+function generateFolio() { return 'F-' + Date.now().toString(36).toUpperCase().slice(-6); }
 function formatDate() {
-  const now   = new Date();
-  const fecha = now.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
-  const hora  = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-  return `${fecha} · ${hora}`;
+  const now = new Date();
+  return now.toLocaleDateString('es-MX', { day:'2-digit', month:'long', year:'numeric' })
+       + ' · ' + now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
 }
-
 function showToast(msg, type = 'ok') {
   toast.textContent = msg;
   toast.className   = `toast toast--${type} toast--visible`;
-  setTimeout(() => toast.classList.remove('toast--visible'), 3000);
+  setTimeout(() => toast.classList.remove('toast--visible'), 3500);
+}
+function allReserved() {
+  return [...taken, ...cart.flatMap(b => b.nums)];
 }
 
-// -----------------------------------------------
-// Renderizado de la cuadrícula
-// -----------------------------------------------
+// ── Carga inicial ─────────────────────────────
+
+async function loadTaken() {
+  try {
+    const res  = await fetch(`${API_URL}?taken=true`);
+    const data = await res.json();
+    taken = data.taken || [];
+    localStorage.setItem('rifa_taken', JSON.stringify(taken));
+  } catch {
+    taken = JSON.parse(localStorage.getItem('rifa_taken') || '[]');
+  } finally {
+    renderGrid();
+    updateUI();
+  }
+}
+
+// ── Grid ──────────────────────────────────────
 
 function renderGrid(filter = '') {
   grid.innerHTML = '';
+  const inCartNums  = cart.flatMap(b => b.nums);
+  const available   = [];
+  const unavailable = [];
 
   for (let i = 0; i <= TOTAL; i++) {
     const str = pad(i);
     if (filter && !str.includes(filter)) continue;
+    if ((taken.includes(i) || inCartNums.includes(i)) && !selected.includes(i)) {
+      unavailable.push(i);
+    } else {
+      available.push(i);
+    }
+  }
 
+  [...available, ...unavailable].forEach(i => {
     const btn = document.createElement('button');
     btn.className   = 'num-btn';
-    btn.textContent = str;
+    btn.textContent = pad(i);
     btn.dataset.n   = i;
 
     if (taken.includes(i)) {
       btn.classList.add('taken');
       btn.disabled = true;
-      btn.title    = 'Número ya tomado';
+      btn.title    = 'Número ya vendido';
+    } else if (inCartNums.includes(i)) {
+      btn.classList.add('in-cart');
+      btn.disabled = true;
+      btn.title    = 'Ya está en tu carrito';
     } else if (selected.includes(i)) {
       btn.classList.add('selected');
       btn.addEventListener('click', () => toggle(i));
@@ -108,18 +124,19 @@ function renderGrid(filter = '') {
     }
 
     grid.appendChild(btn);
-  }
+  });
 }
 
-// -----------------------------------------------
-// Lógica de selección
-// -----------------------------------------------
+// ── Selección ─────────────────────────────────
 
 function toggle(n) {
   if (selected.includes(n)) {
     selected = selected.filter(x => x !== n);
   } else {
-    if (selected.length >= 4) return;
+    if (selected.length >= ticketType) {
+      showToast(`Este boleto lleva ${ticketType} números. Agrégalo al carrito o quita uno.`, 'warn');
+      return;
+    }
     selected.push(n);
   }
   updateUI();
@@ -128,8 +145,7 @@ function toggle(n) {
 
 function syncButtonState(n) {
   const btn = grid.querySelector(`[data-n="${n}"]`);
-  if (!btn) return;
-  btn.classList.toggle('selected', selected.includes(n));
+  if (btn) btn.classList.toggle('selected', selected.includes(n));
 }
 
 function removeNum(n) {
@@ -137,162 +153,200 @@ function removeNum(n) {
   updateUI();
   syncButtonState(n);
 }
-
 window.removeNum = removeNum;
 
 function pickRandom() {
+  const reserved  = allReserved();
   const available = [];
   for (let i = 0; i <= TOTAL; i++) {
-    if (!taken.includes(i) && !selected.includes(i)) available.push(i);
+    if (!reserved.includes(i) && !selected.includes(i)) available.push(i);
   }
-  const needed = 4 - selected.length;
+  const needed = ticketType - selected.length;
   for (let i = 0; i < needed; i++) {
     if (!available.length) break;
     const idx = Math.floor(Math.random() * available.length);
-    const n   = available.splice(idx, 1)[0];
-    selected.push(n);
+    selected.push(available.splice(idx, 1)[0]);
   }
   renderGrid(searchInput.value.trim());
   updateUI();
 }
 
-// -----------------------------------------------
-// Actualización de la UI
-// -----------------------------------------------
+// ── UI general ────────────────────────────────
 
 function updateUI() {
-  counter.textContent = `${selected.length} / 4 seleccionados`;
-  genBtn.disabled     = selected.length !== 4;
+  counter.textContent = `${selected.length} / ${ticketType} seleccionados`;
+  const ready = selected.length === ticketType;
+  genBtn.disabled    = !ready;
+  genBtn.textContent = ready ? 'Agregar al carrito 🛒' : `Selecciona ${ticketType} números`;
 
   if (selected.length === 0) {
     selBar.innerHTML = '<span class="sel-hint">No has seleccionado ningún número aún.</span>';
     return;
   }
-
-  const sorted = [...selected].sort((a, b) => a - b);
-  selBar.innerHTML = sorted
-    .map(n => `
-      <span class="sel-chip">
-        ${pad(n)}
-        <span class="rm" onclick="removeNum(${n})">×</span>
-      </span>
-    `)
-    .join('');
+  selBar.innerHTML = [...selected].sort((a,b) => a-b).map(n => `
+    <span class="sel-chip">${pad(n)}<span class="rm" onclick="removeNum(${n})">×</span></span>
+  `).join('');
 }
 
-// -----------------------------------------------
-// Flujo: Generar boleto
-// -----------------------------------------------
+// ── Tipo de boleto ────────────────────────────
 
-function openNameModal() {
-  pendingNums              = [...selected].sort((a, b) => a - b);
-  buyerInput.value         = '';
-  phoneInput.value         = '';
-  nameError.style.display  = 'none';
-  phoneError.style.display = 'none';
-  nameModal.classList.add('open');
+typeBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = parseInt(btn.dataset.type, 10);
+    if (t === ticketType) return;
+    ticketType = t;
+    selected   = [];
+    typeBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.type, 10) === ticketType));
+    renderGrid(searchInput.value.trim());
+    updateUI();
+  });
+});
+
+// ── Carrito ───────────────────────────────────
+
+function addToCart() {
+  if (selected.length !== ticketType) return;
+  cart.push({ nums: [...selected].sort((a,b) => a-b), tipo: ticketType });
+  selected = [];
+  renderGrid(searchInput.value.trim());
+  updateUI();
+  updateCartUI();
+  showToast('Boleto agregado al carrito 🛒', 'ok');
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  renderGrid(searchInput.value.trim());
+  updateCartUI();
+  updateUI();
+}
+window.removeFromCart = removeFromCart;
+
+function cartTotal$() {
+  return cart.reduce((sum, b) => sum + PRECIO[b.tipo], 0);
+}
+
+function updateCartUI() {
+  const total = cartTotal$();
+  const count = cart.length;
+
+  if (count === 0) {
+    cartBar.classList.remove('visible');
+    document.body.style.paddingBottom = '';
+  } else {
+    cartBar.classList.add('visible');
+    cartCount.textContent   = `${count} boleto${count > 1 ? 's' : ''}`;
+    cartTotalEl.textContent = `$${total}`;
+    document.body.style.paddingBottom = '5rem';
+  }
+
+  cartItems.innerHTML = count === 0
+    ? '<p class="cart-empty">Tu carrito está vacío.</p>'
+    : cart.map((b, i) => `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <span class="cart-item-badge">${b.tipo} núm · $${PRECIO[b.tipo]}</span>
+            <span class="cart-item-nums">${b.nums.map(pad).join(' · ')}</span>
+          </div>
+          <button class="cart-item-remove" onclick="removeFromCart(${i})">×</button>
+        </div>
+      `).join('');
+
+  cartSummary.textContent = count > 0 ? `${count} boleto${count > 1 ? 's' : ''} · Total: $${total}` : '';
+  cartWaBtn.disabled      = count === 0;
+}
+
+// ── Modal comprador ───────────────────────────
+
+function openBuyerModal() {
+  if (cart.length === 0) { showToast('Tu carrito está vacío.', 'warn'); return; }
+  buyerInput.value            = '';
+  buyerPhone.value            = '';
+  buyerNameErr.style.display  = 'none';
+  buyerPhoneErr.style.display = 'none';
+  buyerModal.classList.add('open');
+  cartPanel.classList.remove('open');
   setTimeout(() => buyerInput.focus(), 150);
 }
 
-async function confirmName() {
+async function confirmBuyer() {
   const name  = buyerInput.value.trim();
-  const phone = phoneInput.value.trim();
+  const phone = buyerPhone.value.trim();
 
-  const soloLetras     = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
-  const dospalabras    = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
+  const soloLetras  = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s'-]+$/.test(name);
+  const dospalabras = name.split(/\s+/).filter(w => w.length > 1).length >= 2;
+  const telValido   = /^\+?[\d\s\-]{8,15}$/.test(phone);
 
-  const telefonoValido = /^\+?[\d\s\-]{8,15}$/.test(phone);
+  let hasErr = false;
 
-  let hasError = false;
-
-  if (!name) {
-    nameError.textContent   = 'Por favor ingresa tu nombre.';
-    nameError.style.display = 'block';
-    hasError = true;
-  } else if (!soloLetras) {
-    nameError.textContent   = 'Solo letras, sin números ni símbolos.';
-    nameError.style.display = 'block';
-    hasError = true;
-  } else if (!dospalabras) {
-    nameError.textContent   = 'Ingresa nombre y apellido.';
-    nameError.style.display = 'block';
-    hasError = true;
+  if (!name || !soloLetras || !dospalabras) {
+    buyerNameErr.textContent   = !name ? 'Por favor ingresa tu nombre.' : 'Ingresa nombre y apellido (solo letras).';
+    buyerNameErr.style.display = 'block';
+    hasErr = true;
   } else {
-    nameError.style.display = 'none';
+    buyerNameErr.style.display = 'none';
   }
 
-  if (!phone) {
-    phoneError.textContent   = 'Por favor ingresa tu teléfono.';
-    phoneError.style.display = 'block';
-    hasError = true;
-  } else if (!telefonoValido) {
-    phoneError.textContent   = 'Teléfono no válido (mín. 8 dígitos).';
-    phoneError.style.display = 'block';
-    hasError = true;
+  if (!phone || !telValido) {
+    buyerPhoneErr.textContent   = !phone ? 'Por favor ingresa tu teléfono.' : 'Teléfono no válido (mín. 8 dígitos).';
+    buyerPhoneErr.style.display = 'block';
+    hasErr = true;
   } else {
-    phoneError.style.display = 'none';
+    buyerPhoneErr.style.display = 'none';
   }
 
-  if (hasError) return;
+  if (hasErr) return;
 
-  modalConfirm.disabled    = true;
-  modalConfirm.textContent = 'Guardando…';
+  buyerConfirm.disabled    = true;
+  buyerConfirm.textContent = 'Guardando…';
 
-  const folio = generateFolio();
-  const date  = formatDate();
+  const date   = formatDate();
+  let allSaved = true;
 
-// Reintentar hasta 3 veces
-  let saved = false;
-  for (let intento = 1; intento <= 3; intento++) {
-    try {
-      await saveToBackend({ name, phone, nums: pendingNums, folio, date });
-      saved = true;
-      break;
-    } catch (err) {
-      console.warn(`Intento ${intento} fallido:`, err);
-      if (intento < 3) await new Promise(r => setTimeout(r, 1000 * intento));
+  for (const boleto of cart) {
+    // Pequeña pausa entre boletos para evitar race condition en el backend
+    await new Promise(r => setTimeout(r, 300));
+
+    const folio = generateFolio();
+    let saved   = false;
+
+    for (let intento = 1; intento <= 3; intento++) {
+      try {
+        await saveToBackend({ name, phone, nums: boleto.nums, folio, date, tipo: boleto.tipo });
+        saved = true;
+        break;
+      } catch {
+        if (intento < 3) await new Promise(r => setTimeout(r, 1000 * intento));
+      }
     }
+
+    if (!saved) { allSaved = false; break; }
   }
 
-  if (!saved) {
+  if (!allSaved) {
     showToast('No se pudo guardar. Verifica tu conexión e intenta de nuevo.', 'warn');
-    modalConfirm.disabled    = false;
-    modalConfirm.textContent = 'Confirmar →';
-    return; // ← se detiene aquí, no genera boleto
+    buyerConfirm.disabled    = false;
+    buyerConfirm.textContent = 'Confirmar →';
+    return;
   }
 
-  // Solo si se guardó correctamente:
-  showToast('Boleto registrado correctamente', 'ok');
-  taken = taken.concat(pendingNums);
+  taken = taken.concat(cart.flatMap(b => b.nums));
   saveTaken();
+  showToast('¡Boletos registrados! Confirma por WhatsApp 🎉', 'ok');
 
-  nameModal.classList.remove('open');
-  modalConfirm.disabled    = false;
-  modalConfirm.textContent = 'Confirmar →';
+  buyerModal.classList.remove('open');
+  buyerConfirm.disabled    = false;
+  buyerConfirm.textContent = 'Confirmar →';
 
-  renderTicket({ nums: pendingNums, name, folio, date });
+  abrirWhatsApp(name, phone, cart);
 
-  selected    = [];
-  pendingNums = [];
+  cart = []; selected = [];
   renderGrid(searchInput.value.trim());
   updateUI();
+  updateCartUI();
 }
 
-function renderTicket({ nums, name, folio, date }) {
-  document.getElementById('ticket-nums').innerHTML = nums
-    .map(n => `<div class="ticket-num">${pad(n)}</div>`)
-    .join('');
-
-  document.getElementById('ticket-buyer').textContent = name;
-  document.getElementById('ticket-date').textContent  = date;
-  document.getElementById('ticket-id').textContent    = `Folio: ${folio}`;
-
-  overlay.classList.add('open');
-}
-
-// -----------------------------------------------
-// Backend
-// -----------------------------------------------
+// ── Backend ───────────────────────────────────
 
 async function saveToBackend(data) {
   const res = await fetch(API_URL, {
@@ -300,216 +354,148 @@ async function saveToBackend(data) {
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(data),
   });
-
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(`HTTP ${res.status}: ${msg}`);
-  }
-
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
-// -----------------------------------------------
-// Guardar boleto como JPG
-// -----------------------------------------------
+// ── WhatsApp ──────────────────────────────────
 
-// -----------------------------------------------
-// Guardar boleto como JPG  — compatible con iPhone
-// -----------------------------------------------
-
-saveBtn.addEventListener('click', async () => {
-  const nums    = [...document.querySelectorAll('.ticket-num')].map(el => el.textContent.trim());
-  const buyer   = document.getElementById('ticket-buyer').textContent;
-  const folio   = document.getElementById('ticket-id').textContent;
-  const date    = document.getElementById('ticket-date').textContent;
-
-  const W = 900, H = 620;
-  const canvas = document.createElement('canvas');
-  canvas.width  = W;
-  canvas.height = H;
-  const ctx = canvas.getContext('2d');
-
-  // --- Fondo general ---
-  ctx.fillStyle = '#f5f6f8';
-  ctx.fillRect(0, 0, W, H);
-
-  // --- Header azul ---
-  ctx.fillStyle = '#185FA5';
-  roundRect(ctx, 0, 0, W, 200, { tl: 14, tr: 14, bl: 0, br: 0 });
-  ctx.fill();
-
-  // --- "BOLETO OFICIAL" ---
-  ctx.fillStyle = '#B5D4F4';
-  ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.letterSpacing = '4px';
-  ctx.fillText('BOLETO OFICIAL', W / 2, 60);
-
-  // --- Título ---
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '700 38px "Plus Jakarta Sans", sans-serif';
-  ctx.letterSpacing = '0px';
-  ctx.fillText('Tu boleto de rifa', W / 2, 120);
-
-  // --- Fecha ---
-  ctx.fillStyle = '#B5D4F4';
-  ctx.font = '400 22px "Plus Jakarta Sans", sans-serif';
-  ctx.fillText(date, W / 2, 165);
-
-  // --- Divisor con estrella ---
-  ctx.strokeStyle = '#d1d5db';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(60, 228); ctx.lineTo(W/2 - 20, 228); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(W/2 + 20, 228); ctx.lineTo(W - 60, 228); ctx.stroke();
-  ctx.fillStyle = '#9ca3af';
-  ctx.font = '18px sans-serif';
-  ctx.fillText('★', W / 2, 234);
-
-  // --- Números ---
-  const boxW = 140, boxH = 140, gap = 24;
-  const totalW = nums.length * boxW + (nums.length - 1) * gap;
-  const startX = (W - totalW) / 2;
-  const startY = 260;
-
-  nums.forEach((num, i) => {
-    const x = startX + i * (boxW + gap);
-    ctx.fillStyle = '#ffffff';
-    roundRect(ctx, x, startY, boxW, boxH, 10);
-    ctx.fill();
-    ctx.strokeStyle = '#B5D4F4';
-    ctx.lineWidth = 2;
-    roundRect(ctx, x, startY, boxW, boxH, 10);
-    ctx.stroke();
-    ctx.fillStyle = '#0C447C';
-    ctx.font = '600 36px "DM Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(num, x + boxW / 2, startY + boxH / 2 + 13);
-  });
-
-  // --- Footer blanco ---
-  ctx.fillStyle = '#ffffff';
-  roundRect(ctx, 0, 430, W, H - 430, { tl: 0, tr: 0, bl: 14, br: 14 });
-  ctx.fill();
-
-  // --- Nombre ---
-  ctx.fillStyle = '#1a1a1a';
-  ctx.font = '700 32px "Plus Jakarta Sans", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(buyer, W / 2, 500);
-
-  // --- Folio ---
-  ctx.fillStyle = '#9ca3af';
-  ctx.font = '500 20px "DM Mono", monospace';
-  ctx.fillText(folio, W / 2, 565);
-
-  // --- Exportar ---
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const folioClean = folio.replace('Folio: ', '');
-
-  canvas.toBlob((blob) => {
-    const url  = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href     = url;
-    link.download = `boleto-${folioClean}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    if (isIOS) {
-      showToast('Mantén presionada la imagen para guardarla 📲', 'ok');
-      setTimeout(() => { window.open(url, '_blank'); URL.revokeObjectURL(url); }, 300);
-    } else {
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-  }, 'image/jpeg', 0.95);
-});
-
-// Helper para rectángulos redondeados
-function roundRect(ctx, x, y, w, h, r) {
-  if (typeof r === 'number') r = { tl: r, tr: r, bl: r, br: r };
-  ctx.beginPath();
-  ctx.moveTo(x + r.tl, y);
-  ctx.lineTo(x + w - r.tr, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
-  ctx.lineTo(x + w, y + h - r.br);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
-  ctx.lineTo(x + r.bl, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
-  ctx.lineTo(x, y + r.tl);
-  ctx.quadraticCurveTo(x, y, x + r.tl, y);
-  ctx.closePath();
-}
-
-// -----------------------------------------------
-// WhatsApp
-// -----------------------------------------------
-
-function abrirWhatsApp() {
-  const nombre  = document.getElementById('ticket-buyer').textContent;
-  const folio   = document.getElementById('ticket-id').textContent.replace('Folio: ', '');
-  const numeros = [...document.querySelectorAll('.ticket-num')].map(el => el.textContent.trim());
+function abrirWhatsApp(nombre, telefono, boletos) {
+  const total  = boletos.reduce((s, b) => s + PRECIO[b.tipo], 0);
+  const lineas = boletos.map((b, i) =>
+    `*Boleto ${i+1}* (${b.tipo} núm · $${PRECIO[b.tipo]}): ${b.nums.map(pad).join(', ')}`
+  );
 
   const msg =
-`¡Hola! Quiero confirmar mi boleto de rifa.
+`¡Hola! Quiero confirmar mis boletos de rifa.
 
-*Nombre:* ${nombre}
-*Números:* ${numeros.join(', ')}
-*Folio:* ${folio}
----------------------------------------------------------------------
-Buen día, le envío el número de cuenta para transferencias o depósitos:
+*Comprador:* ${nombre}  |  📱 ${telefono}
+
+${lineas.join('\n')}
+
+*Total a pagar: $${total}*
+─────────────────────────────────────────
+Buen día ☀️ le envío el número de cuenta para transferencias o depósitos:
+*Si es en efectivo indicar* 💰
 *Cuenta NU:*
 5101 2521 7769 5990
 
 *MercadoPago:*
 722 969 0154 0490 7524
 
-*A nombre de:* Ricardo Bravo Lino
+*Ingrese su nombre en el concepto de pago*
 
-Por favor envía tu comprobante de pago para confirmar tus boletos.`;
+*Por favor envía tu comprobante de pago para confirmar tus boletos.* ✨`;
 
   window.open(`https://wa.me/${WA_TEL}?text=${encodeURIComponent(msg)}`, '_blank');
 }
-waBtn.addEventListener('click', abrirWhatsApp);
 
-// -----------------------------------------------
-// Eventos
-// -----------------------------------------------
+cartWaBtn.addEventListener('click', openBuyerModal);
 
-genBtn.addEventListener('click', openNameModal);
-randomBtn.addEventListener('click', pickRandom); 
-modalConfirm.addEventListener('click', confirmName);
+// ── Guardar imagen (desactivada — código preservado) ──
+// Para reactivar: descomentar el bloque y agregar el botón al HTML
 
-modalCancel.addEventListener('click', () => {
-  nameModal.classList.remove('open');
-  pendingNums = [];
+/*
+saveBtn.addEventListener('click', () => {
+  const nums  = [...document.querySelectorAll('.ticket-num')].map(el => el.textContent.trim());
+  const buyer = document.getElementById('ticket-buyer').textContent;
+  const folio = document.getElementById('ticket-id').textContent;
+  const date  = document.getElementById('ticket-date').textContent;
+
+  const W = 900, H = 620;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#f5f6f8'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#185FA5'; roundRect(ctx,0,0,W,200,{tl:14,tr:14,bl:0,br:0}); ctx.fill();
+  ctx.fillStyle='#B5D4F4'; ctx.font='600 22px "Plus Jakarta Sans",sans-serif';
+  ctx.textAlign='center'; ctx.fillText('BOLETO OFICIAL',W/2,60);
+  ctx.fillStyle='#ffffff'; ctx.font='700 38px "Plus Jakarta Sans",sans-serif';
+  ctx.fillText('Tu boleto de rifa',W/2,120);
+  ctx.fillStyle='#B5D4F4'; ctx.font='400 22px "Plus Jakarta Sans",sans-serif';
+  ctx.fillText(date,W/2,165);
+  ctx.strokeStyle='#d1d5db'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(60,228); ctx.lineTo(W/2-20,228); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2+20,228); ctx.lineTo(W-60,228); ctx.stroke();
+  ctx.fillStyle='#9ca3af'; ctx.font='18px sans-serif'; ctx.fillText('★',W/2,234);
+
+  const boxW=140,boxH=140,gap=24;
+  const totalW=nums.length*boxW+(nums.length-1)*gap;
+  const startX=(W-totalW)/2, startY=260;
+  nums.forEach((num,i)=>{
+    const x=startX+i*(boxW+gap);
+    ctx.fillStyle='#ffffff'; roundRect(ctx,x,startY,boxW,boxH,10); ctx.fill();
+    ctx.strokeStyle='#B5D4F4'; ctx.lineWidth=2; roundRect(ctx,x,startY,boxW,boxH,10); ctx.stroke();
+    ctx.fillStyle='#0C447C'; ctx.font='600 36px "DM Mono",monospace'; ctx.textAlign='center';
+    ctx.fillText(num,x+boxW/2,startY+boxH/2+13);
+  });
+
+  ctx.fillStyle='#ffffff'; roundRect(ctx,0,430,W,H-430,{tl:0,tr:0,bl:14,br:14}); ctx.fill();
+  ctx.fillStyle='#1a1a1a'; ctx.font='700 32px "Plus Jakarta Sans",sans-serif'; ctx.textAlign='center';
+  ctx.fillText(buyer,W/2,500);
+  ctx.fillStyle='#9ca3af'; ctx.font='500 20px "DM Mono",monospace';
+  ctx.fillText(folio,W/2,565);
+
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  const folioClean=folio.replace('Folio: ','');
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`boleto-${folioClean}.jpg`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    if(isIOS){
+      showToast('Mantén presionada la imagen para guardarla 📲','ok');
+      setTimeout(()=>{window.open(url,'_blank');URL.revokeObjectURL(url);},300);
+    } else setTimeout(()=>URL.revokeObjectURL(url),1000);
+  },'image/jpeg',0.95);
 });
 
-buyerInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') confirmName();
-});
+function roundRect(ctx,x,y,w,h,r){
+  if(typeof r==='number') r={tl:r,tr:r,bl:r,br:r};
+  ctx.beginPath();
+  ctx.moveTo(x+r.tl,y); ctx.lineTo(x+w-r.tr,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r.tr);
+  ctx.lineTo(x+w,y+h-r.br);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r.br,y+h);
+  ctx.lineTo(x+r.bl,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r.bl);
+  ctx.lineTo(x,y+r.tl);
+  ctx.quadraticCurveTo(x,y,x+r.tl,y);
+  ctx.closePath();
+}
+*/
+
+// ── Eventos ───────────────────────────────────
+
+genBtn.addEventListener('click', addToCart);
+randomBtn.addEventListener('click', pickRandom);
+buyerConfirm.addEventListener('click', confirmBuyer);
+buyerCancel.addEventListener('click', () => buyerModal.classList.remove('open'));
+buyerInput.addEventListener('keydown', e => { if (e.key === 'Enter') confirmBuyer(); });
+buyerModal.addEventListener('click', e => { if (e.target === buyerModal) buyerModal.classList.remove('open'); });
 
 closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
 
-overlay.addEventListener('click', (e) => {
-  if (e.target === overlay) overlay.classList.remove('open');
-});
-
-nameModal.addEventListener('click', (e) => {
-  if (e.target === nameModal) nameModal.classList.remove('open');
-});
-
-searchInput.addEventListener('input', () => {
+cartBar.addEventListener('click', () => cartPanel.classList.toggle('open'));
+cartClose.addEventListener('click', () => cartPanel.classList.remove('open'));
+cartClear.addEventListener('click', () => {
+  if (!confirm('¿Vaciar el carrito?')) return;
+  cart = []; selected = [];
   renderGrid(searchInput.value.trim());
+  updateUI(); updateCartUI();
+  cartPanel.classList.remove('open');
 });
 
+searchInput.addEventListener('input', () => renderGrid(searchInput.value.trim()));
 searchInput.addEventListener('change', () => {
   const val = parseInt(searchInput.value, 10);
   if (val > TOTAL) searchInput.value = TOTAL;
   if (val < 1)     searchInput.value = '';
 });
 
-// -----------------------------------------------
-// Inicialización
-// -----------------------------------------------
+// ── Init ──────────────────────────────────────
 loadTaken();
 updateUI();
+updateCartUI();

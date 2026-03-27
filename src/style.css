@@ -1,5 +1,5 @@
 /* =============================================
-   RIFA — styles.css
+   RIFA — styles.css 
    ============================================= */
 
 *, *::before, *::after {
@@ -9,7 +9,6 @@
 }
 
 :root {
-  /*--green-main:   #1bbe44;*/
   --blue-main:    #185FA5;
   --blue-dark:    #0C447C;
   --blue-light:   #E6F1FB;
@@ -35,19 +34,19 @@ body {
   min-height: 100vh;
 }
 
-/* ---- PAGE LAYOUT ---- */
+/* ── Layout ──────────────────────────────────── */
+
 #app {
   max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem .5rem .5rem;
 }
 
-/* ---- HEADER ---- */
+/* ── Header ──────────────────────────────────── */
+
 .page-header {
   margin-bottom: .5rem;
   text-align: center;
-
-
 }
 
 .page-header h1 {
@@ -69,11 +68,9 @@ body {
   font-weight: 600;
 }
 
-/* ---- SELECTION BAR ---- */
-.selection-section {
-  margin-bottom: .5rem;
-  
-}
+/* ── Selection bar ───────────────────────────── */
+
+.selection-section { margin-bottom: .5rem; }
 
 .selection-bar {
   display: flex;
@@ -81,13 +78,11 @@ body {
   gap: 8px;
   align-items: center;
   min-height: 40px;
-  
 }
 
 .sel-hint {
   font-size: 13px;
   color: var(--text-hint);
-
 }
 
 .sel-chip {
@@ -112,12 +107,62 @@ body {
   opacity: 0.6;
   transition: opacity 0.15s;
 }
+.sel-chip .rm:hover { opacity: 1; }
 
-.sel-chip .rm:hover {
-  opacity: 1;
+/* ── Selector tipo de boleto ─────────────────── */
+
+.type-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem 1.25rem;
 }
 
-/* ---- CONTROLS ---- */
+.type-toggle {
+  display: flex;
+  gap: 0.75rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+}
+
+.type-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.65rem 1.75rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  font-family: inherit;
+}
+
+.type-btn__nums {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.type-btn__price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.type-btn.active {
+  background: var(--bg-card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.type-btn.active .type-btn__nums,
+.type-btn.active .type-btn__price { color: var(--blue-main); }
+
+.type-btn:hover:not(.active) { background: rgba(255,255,255,0.6); }
+
+/* ── Controls ────────────────────────────────── */
+
 .controls-section {
   display: flex;
   gap: 10px;
@@ -162,7 +207,8 @@ body {
   white-space: nowrap;
 }
 
-/* ---- BUTTONS ---- */
+/* ── Buttons ─────────────────────────────────── */
+
 .btn-main {
   background: var(--blue-main);
   color: #fff;
@@ -177,14 +223,8 @@ body {
   text-decoration: none;
 }
 
-.btn-main:hover:not(:disabled) {
-  background: var(--blue-dark);
-}
-
-.btn-main:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
+.btn-main:hover:not(:disabled) { background: var(--blue-dark); }
+.btn-main:active:not(:disabled) { transform: scale(0.97); }
 .btn-main:disabled {
   background: #c5d4e8;
   cursor: not-allowed;
@@ -202,14 +242,30 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
+.btn-secondary:hover { background: var(--bg-surface); }
 
-.btn-secondary:hover {
-  background: var(--bg-surface);
+.btn-outline {
+  background: transparent;
+  color: var(--blue-main);
+  border: 1.5px solid var(--blue-mid);
+  border-radius: var(--radius-md);
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-outline:hover {
+  background: var(--blue-light);
+  border-color: var(--blue-main);
 }
 
-/* ---- NUMBER GRID ---- */
+/* ── Number grid ─────────────────────────────── */
+
 .grid-section {
-  background: var(--green-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
@@ -253,15 +309,13 @@ body {
   transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.08s;
 }
 
-.num-btn:hover:not(.taken):not(.selected) {
+.num-btn:hover:not(.taken):not(.selected):not(.in-cart) {
   background: var(--blue-light);
   border-color: var(--blue-mid);
   color: var(--blue-dark);
 }
 
-.num-btn:active:not(.taken):not(.selected) {
-  transform: scale(0.95);
-}
+.num-btn:active:not(.taken):not(.selected):not(.in-cart) { transform: scale(0.95); }
 
 .num-btn.selected {
   background: var(--blue-main);
@@ -278,21 +332,341 @@ body {
   text-decoration: line-through;
 }
 
-/* ---- TICKET OVERLAY ---- */
+.num-btn.in-cart {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+  opacity: 0.75;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.num-btn.in-cart::after {
+  content: '🛒';
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+/* ── Modals (base compartida) ────────────────── */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 2rem 2rem 1.5rem;
+  width: min(90vw, 420px);
+  box-shadow: 0 24px 60px rgba(0,0,0,.25);
+  animation: modal-in .22s ease;
+}
+
+@keyframes modal-in {
+  from { transform: translateY(18px) scale(.97); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.modal-box h3 {
+  text-align: center;
+  margin: 0 0 .25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.modal-sub {
+  color: var(--text-muted);
+  font-size: .88rem;
+  margin: 0 0 1.1rem;
+}
+
+.modal-box input[type="text"],
+.modal-box input[type="tel"],
+.modal-box input[type="email"] {
+  width: 100%;
+  padding: .7rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color .18s;
+  box-sizing: border-box;
+  margin-top: .6rem;
+}
+
+.modal-box input:first-of-type { margin-top: 0; }
+
+.modal-box input:focus {
+  outline: none;
+  border-color: var(--blue-main);
+}
+
+.field-error {
+  color: #e63946;
+  font-size: .82rem;
+  margin-top: .35rem;
+  margin-bottom: .5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: .75rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+/* ── Modal destinatario ──────────────────────── */
+
+.recip-same-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-page);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-md);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.recip-same-label:hover {
+  background: var(--blue-light);
+  border-color: var(--blue-mid);
+}
+
+.recip-same-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--blue-main);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Carrito flotante ────────────────────────── */
+
+.cart-bar {
+  position: fixed; 
+  bottom: -80px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  z-index: 200; 
+  transition: bottom 0.3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+}
+
+.cart-bar.visible {
+  bottom: calc(60px + 1rem); /* encima del footer */
+  pointer-events: auto;
+}
+
+@media (max-width: 480px) {
+  .cart-bar.visible { bottom: calc(8px + 0.75rem); }
+}
+
+.cart-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--blue-dark);
+  color: #fff;
+  padding: 0.8rem 1.4rem;
+  border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(12,68,124,0.35);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.cart-bar-inner:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 28px rgba(12,68,124,0.4);
+}
+
+.cart-bar-icon  { font-size: 1.1rem; }
+.cart-bar-count { font-weight: 700; }
+.cart-bar-sep   { opacity: 0.5; }
+.cart-bar-total { color: #7dd3fc; font-weight: 700; }
+.cart-bar-cta   { opacity: 0.75; font-size: 0.82rem; margin-left: 0.25rem; }
+
+/* ── Panel carrito ───────────────────────────── */
+
+.cart-panel {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  transition: bottom 0.35s cubic-bezier(.34,1.2,.64,1);
+}
+
+.cart-panel.open { bottom: 0; }
+
+.cart-panel-inner {
+  background: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+  padding: 1.25rem 1.25rem 2rem;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cart-panel-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cart-panel-close {
+  background: var(--bg-surface);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: background 0.15s;
+}
+.cart-panel-close:hover { background: #e5e7eb; }
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-right: 0.25rem;
+}
+
+.cart-empty {
+  text-align: center;
+  color: var(--text-hint);
+  font-size: 0.9rem;
+  padding: 2rem 0;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-page);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cart-item-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--blue-main);
+  background: var(--blue-light);
+  border-radius: 4px;
+  padding: 1px 6px;
+  width: fit-content;
+}
+
+.cart-item-nums {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.cart-item-recip {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.cart-item-recip--self { color: var(--text-hint); }
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--text-hint);
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.cart-item-remove:hover { color: #ef4444; }
+
+.cart-panel-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.75rem;
+}
+
+.cart-summary {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin: 0 0 0.75rem;
+  text-align: center;
+}
+
+.cart-panel-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.cart-panel-actions .btn-secondary,
+.cart-panel-actions .btn-main { flex: 1; }
+
+/* ── Ticket overlay ──────────────────────────── */
+
 #ticket-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0,0,0,0.55);
   z-index: 200;
   align-items: center;
   justify-content: center;
   padding: 1rem;
 }
 
-#ticket-overlay.open {
-  display: flex;
-}
+#ticket-overlay.open { display: flex; }
 
 #ticket-box {
   background: var(--bg-card);
@@ -324,17 +698,8 @@ body {
   text-transform: uppercase;
 }
 
-.ticket-header h2 {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.ticket-header p {
-  color: var(--blue-mid);
-  font-size: 12px;
-  margin-top: 4px;
-}
+.ticket-header h2 { color: #fff; font-size: 20px; font-weight: 600; }
+.ticket-header p  { color: var(--blue-mid); font-size: 12px; margin-top: 4px; }
 
 .ticket-divider {
   display: flex;
@@ -388,6 +753,14 @@ body {
   background: var(--bg-card);
 }
 
+.ticket-buyer {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: .5rem 0 1rem;
+  color: var(--text-primary);
+}
+
 .ticket-folio {
   font-size: 12px;
   color: var(--text-hint);
@@ -401,125 +774,10 @@ body {
   gap: 8px;
 }
 
-.ticket-actions button {
-  flex: 1;
-}
+.ticket-actions button { flex: 1; }
 
-/* ---- RESPONSIVE ---- */
-@media (max-width: 520px) {
-  .page-header h1 { font-size: 24px; }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 5px; }
-  .num-btn { font-size: 12px; padding: 8px 2px; }
-  .ticket-num { width: 62px; height: 62px; font-size: 17px; }
-  .controls-section { flex-direction: column; align-items: stretch; }
-  .controls-right { justify-content: space-between; }
-}
+/* ── Toast ───────────────────────────────────── */
 
-/* ---- PRINT ---- */
-@media print {
-  body * { visibility: hidden; }
-  #ticket-overlay, #ticket-overlay * { visibility: visible; }
-  #ticket-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    background: white;
-    width: 100%;
-    padding: 2rem;
-    display: block;
-  }
-  #ticket-box {
-    box-shadow: none;
-    max-width: 100%;
-    border: 1px solid #ccc;
-  }
-  .no-print { display: none !important; }
-}
-
-/* ──────────────────────────────────────────────
-   Añade esto al final de tu style.css existente
-────────────────────────────────────────────── */
-
-/* ── Modal de nombre ── */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.55);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open {
-  display: flex;
-}
-
-.modal-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 2rem 2rem 1.5rem;
-  width: min(90vw, 420px);
-  box-shadow: 0 24px 60px rgba(0,0,0,.25);
-  animation: modal-in .22s ease;
-}
-
-@keyframes modal-in {
-  from { transform: translateY(18px) scale(.97); opacity: 0; }
-  to   { transform: none; opacity: 1; }
-}
-
-.modal-box h3 {
-  text-align: center;
-  margin: 0 0 .25rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.modal-sub {
-  
-  color: #666;
-  font-size: .88rem;
-  margin: 0 0 1.1rem;
-}
-
-.modal-box input[type="text"] {
-  width: 100%;
-  padding: .7rem 1rem;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: border-color .18s;
-  box-sizing: border-box;
-}
-.modal-box input[type="text"]:focus {
-  outline: none;
-  border-color: #e63946;
-}
-
-.field-error {
-  color: #e63946;
-  font-size: .82rem;
-  margin-top: .35rem;
-}
-
-.modal-actions {
-  display: flex;
-  gap: .75rem;
-  justify-content: flex-end;
-  margin-top: 1.25rem;
-}
-
-/* ── Nombre del comprador en el boleto ── */
-.ticket-buyer {
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: .02em;
-  margin: .5rem 0 1rem;
-  color: #222;
-}
-
-/* ── Toast ── */
 .toast {
   position: fixed;
   bottom: 1.5rem;
@@ -535,27 +793,25 @@ body {
   transition: transform .3s ease, opacity .3s ease;
   opacity: 0;
   pointer-events: none;
-  z-index: 300;
+  z-index: 500;
   white-space: nowrap;
 }
-.toast--visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.toast--warn { background: #c77700; }
-.toast--ok   { background: #1d6f42; }
+
+.toast--visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast--warn    { background: #c77700; }
+.toast--ok      { background: #1d6f42; }
+
+/* ── Footer ──────────────────────────────────── */
 
 footer {
-  bottom: 0;
-  z-index: 100;
   border-top: 1px solid var(--border);
-  padding: 1rem 1rem;
+  padding: 1rem;
   text-align: center;
-  font-size: .8rem;
+  font-size: .8rem; 
   color: var(--text-hint);
   display: flex;
   flex-direction: column;
-  gap: .3rem;
+  gap: .3rem; 
   background: var(--bg-card);
 }
 
@@ -566,28 +822,7 @@ footer a {
 }
 footer a:hover { text-decoration: underline; }
 
-.footer-copy { font-size: .78rem; }
-
-.btn-outline {
-  background: transparent;
-  color: var(--blue-main);
-  border: 1.5px solid var(--blue-mid);
-  border-radius: var(--radius-md);
-  padding: 9px 22px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  transition: background .15s, border-color .15s;
-  display: inline-flex;
-  align-items: center;
-}
-.btn-outline:hover {
-  background: var(--blue-light);
-  border-color: var(--blue-main);
-}
+/* ── Links decorativos ───────────────────────── */
 
 .prizes-link {
   color: var(--blue-main);
@@ -595,44 +830,39 @@ footer a:hover { text-decoration: underline; }
   font-weight: 600;
   font-size: 14px;
   white-space: nowrap;
-  transition: color .15s, gap .15s;
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  transition: color .15s;
+}
+.prizes-link:hover { color: var(--blue-dark); }
+.prizes-link__icon { display: inline-block; transition: transform .2s ease; }
+.prizes-link:hover .prizes-link__icon { transform: translateX(4px); }
+
+/* ── Responsive ──────────────────────────────── */
+
+@media (max-width: 520px) {
+  .page-header h1 { font-size: 24px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 5px; }
+  .num-btn { font-size: 12px; padding: 8px 2px; }
+  .ticket-num { width: 62px; height: 62px; font-size: 17px; }
+  .controls-section { flex-direction: column; align-items: stretch; }
+  .controls-right { justify-content: space-between; }
 }
 
-.prizes-link:hover {
-  color: var(--blue-dark);
-}
+/* ── Print ───────────────────────────────────── */
 
-.prizes-link__icon {
-  display: inline-block;
-  transition: transform .2s ease;
-}
-
-.prizes-link:hover .prizes-link__icon {
-  transform: translateX(4px);
-}
-
-.modal-box input + .field-error {
-  margin-bottom: .75rem;
-}
-
-.modal-box input[type="email"],
-.modal-box input[type="tel"] {
-  width: 100%;
-  padding: .7rem 1rem;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: border-color .18s;
-  box-sizing: border-box;
-  margin-top: .6rem;
-}
-
-.modal-box input[type="email"]:focus,
-.modal-box input[type="tel"]:focus {
-  outline: none;
-  border-color: var(--blue-main);
+@media print {
+  body * { visibility: hidden; }
+  #ticket-overlay, #ticket-overlay * { visibility: visible; }
+  #ticket-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    background: white;
+    width: 100%;
+    padding: 2rem;
+    display: block;
+  }
+  #ticket-box { box-shadow: none; max-width: 100%; border: 1px solid #ccc; }
+  .no-print { display: none !important; }
 }

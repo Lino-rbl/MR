@@ -6,10 +6,10 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <title>RIFA</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&display=swap" rel="stylesheet" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&display=swap" rel="stylesheet" crossorigin>
   <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
@@ -20,7 +20,7 @@
         <div class="header-badge">RIFA · OFICIAL</div>
         <h1>Club Ajedrez <span class="year">2026</span></h1>
         <p class="subtitle">
-          Selecciona exactamente <strong>4 números</strong> del <strong>000</strong> al <strong>999</strong><br><br>
+          Elige tu tipo de boleto y selecciona tus números<br><br>
           · <a href="./index.html" class="prizes-link">ver premios <span class="prizes-link__icon">→</span></a>
         </p>
       </div>
@@ -32,13 +32,27 @@
       </div>
     </section>
 
+    <!-- ── Selector de tipo de boleto ── -->
+    <section class="type-section">
+      <div class="type-toggle" id="type-toggle">
+        <button class="type-btn" data-type="2">
+          <span class="type-btn__nums">2 números</span>
+          <span class="type-btn__price">$50</span>
+        </button>
+        <button class="type-btn active" data-type="4">
+          <span class="type-btn__nums">4 números</span>
+          <span class="type-btn__price">$100</span>
+        </button>
+      </div>
+    </section>
+
     <section class="controls-section">
       <input type="number" id="search" placeholder="Buscar número…" min="0" max="999" />
       <div class="controls-right">
         <span class="counter-badge" id="counter">0 / 4 seleccionados</span>
         <button class="btn-outline" id="random-btn">🎲 Aleatorio</button>
       </div>
-      <button class="btn-main" id="gen-btn" disabled>Generar boleto</button>
+      <button class="btn-main" id="gen-btn" disabled>Selecciona 4 números</button>
     </section>
 
     <section class="grid-section">
@@ -47,17 +61,48 @@
     </section>
   </div>
 
-  <!-- ── Modal: pedir nombre ── -->
-  <div id="name-modal" class="modal-overlay">
+  <!-- ── Barra flotante del carrito ── -->
+  <div id="cart-bar" class="cart-bar">
+    <div class="cart-bar-inner">
+      <span class="cart-bar-icon">🛒</span>
+      <span id="cart-count" class="cart-bar-count"></span>
+      <span class="cart-bar-sep">·</span>
+      <span id="cart-total" class="cart-bar-total"></span>
+      <span class="cart-bar-cta">Ver carrito →</span>
+    </div>
+  </div>
+
+  <!-- ── Panel del carrito ── -->
+  <div id="cart-panel" class="cart-panel">
+    <div class="cart-panel-inner">
+      <div class="cart-panel-header">
+        <h3>🛒 Tu carrito</h3>
+        <button id="cart-close" class="cart-panel-close">×</button>
+      </div>
+      <div id="cart-items" class="cart-items"></div>
+      <div class="cart-panel-footer">
+        <p id="cart-summary" class="cart-summary"></p>
+        <div class="cart-panel-actions">
+          <button id="cart-clear" class="btn-secondary">Vaciar</button>
+          <button id="cart-wa-btn" class="btn-main" style="background:#25D366;" disabled>
+            💬 Confirmar por WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal comprador ── -->
+  <div id="buyer-modal" class="modal-overlay">
     <div class="modal-box">
-      <h3>¿A nombre de quién va el boleto?</h3>
-        <p class="modal-sub">Estos datos quedan registrados con tus números.</p>
+      <h3>Datos del comprador</h3>
+      <p class="modal-sub">Quien realiza el pago. Estos datos quedan registrados.</p>
 
-        <input type="text" id="buyer-name" placeholder="Nombre completo…" maxlength="80" autocomplete="name" />
-        <div id="name-error" class="field-error" style="display:none"></div>
+      <input type="text" id="buyer-name" placeholder="Nombre completo…" maxlength="80" autocomplete="name" />
+      <div id="name-error" class="field-error" style="display:none"></div>
 
-        <input type="tel" id="buyer-phone" placeholder="Teléfono (10 dígitos)…" maxlength="15" autocomplete="tel" />
-        <div id="phone-error" class="field-error" style="display:none"></div>
+      <input type="tel" id="buyer-phone" placeholder="Teléfono (10 dígitos)…" maxlength="15" autocomplete="tel" />
+      <div id="phone-error" class="field-error" style="display:none"></div>
 
       <div class="modal-actions">
         <button class="btn-secondary" id="modal-cancel">Cancelar</button>
@@ -66,7 +111,8 @@
     </div>
   </div>
 
-  <!-- ── Ticket overlay ── -->
+  <!-- ── Ticket overlay (desactivado — preservado para imagen) ── -->
+  <!--
   <div id="ticket-overlay">
     <div id="ticket-box">
       <div class="ticket-header">
@@ -82,26 +128,37 @@
         <div class="ticket-actions no-print">
           <button class="btn-secondary" id="close-btn">Cerrar</button>
           <button class="btn-main" id="save-btn">⬇ Guardar imagen</button>
-          <button class="btn-main" id="wa-btn" style="background:#25D366;">💬 Confirmar por WhatsApp</button>
         </div>
       </div>
     </div>
   </div>
+  -->
 
-  <!-- Toast de confirmación -->
+  <!-- Stubs para que app.js no rompa al buscar estos IDs -->
+  <div id="ticket-overlay" style="display:none">
+    <div id="ticket-box">
+      <p id="ticket-date"></p>
+      <div id="ticket-nums"></div>
+      <div id="ticket-buyer"></div>
+      <p id="ticket-id"></p>
+      <button id="close-btn" style="display:none"></button>
+      <button id="save-btn" style="display:none"></button>
+      <button id="wa-btn"   style="display:none"></button>
+    </div>
+  </div>
+
+  <!-- Toast -->
   <div id="toast" class="toast" aria-live="polite"></div>
 
   <!-- Footer -->
-<footer class="footer">
-        <p>¿Dudas o pagos?</p>  
-        <a href="mailto:rifas.linos@gmail.com">Correo electronico</a>
-        <a href="https://wa.me/5218148071448" target="_blank" style="color:#25D366; font-weight:600;">
-        💬 WhatsApp
-        </a>
-        <p>© 2026 · Lino</p>
-    </footer>
+  <footer class="footer">
+    <p>¿Dudas o pagos?</p>
+    <a href="https://wa.me/5218148071448" target="_blank" style="color:#25D366; font-weight:600;">
+      💬 WhatsApp
+    </a>
+    <p>© 2026 · Lino</p>
+  </footer>
 
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
   <script type="module" src="./src/app.js"></script>
 </body>
 </html>
