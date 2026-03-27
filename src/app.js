@@ -62,7 +62,7 @@ function formatDate() {
 function showToast(msg, type = 'ok') {
   toast.textContent = msg;
   toast.className   = `toast toast--${type} toast--visible`;
-  setTimeout(() => toast.classList.remove('toast--visible'), 3500);
+  setTimeout(() => toast.classList.remove('toast--visible'), 1500);
 }
 function allReserved() {
   return [...taken, ...cart.flatMap(b => b.nums)];
