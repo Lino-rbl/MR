@@ -372,13 +372,13 @@ function abrirWhatsApp(nombre, telefono, boletos) {
   const msg =
 `¡Hola! Quiero confirmar mis boletos de rifa.
 
-*Comprador:* ${nombre}  |  📱 ${telefono}
+*Comprador:* ${nombre}  ${telefono}
 
 ${lineas.join('\n')}
 
 *Total a pagar: $${total}*
-─────────────────────────────────────────
-Buen día ☀️ le envío el número de cuenta para transferencias o depósitos:
+──────────────────────────────────
+Buen día, ☀️ le envío el número de cuenta para transferencias o depósitos:
 *Si es en efectivo indicar* 💰
 *Cuenta NU:*
 5101 2521 7769 5990
