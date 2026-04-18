@@ -10,7 +10,7 @@ export default defineConfig({
         rollupOptions: {
           input: {
             index: resolve(__dirname, 'index.html'),
-            compra_boletos: resolve(__dirname, 'compra_boletos.html'),
+            //compra_boletos: resolve(__dirname, 'compra_boletos.html'),
             
           }
         },
