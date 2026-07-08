@@ -12,6 +12,8 @@
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.11.0/sql-wasm.js"></script>
+
 </head>
 
 <body>
@@ -144,6 +146,46 @@ ESP8266
 
 </div>
 
+<div class="acciones-panel">
+
+<button id="btnHistorial" class="btn-historial" type="button">Ver historial</button>
+
+</div>
+
+<div id="bloqueHistorial" class="historial oculto">
+
+<h2>Historial de Detecciones</h2>
+
+<div class="tabla-historial-wrap">
+
+<table id="tablaHistorial">
+
+<thead>
+
+<tr>
+
+<th>Coordenada</th>
+
+<th>Distancia</th>
+
+<th>Fecha</th>
+
+<th>Hora</th>
+
+</tr>
+
+</thead>
+
+<tbody id="cuerpoHistorial">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
 <hr>
 
 <h2>Distancias</h2>
@@ -194,7 +236,7 @@ ESP8266
 
 </div>
 
-<script type="module" src="script.js"></script>
+<script src="script.js"></script>
 
 </body>
 
