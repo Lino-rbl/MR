@@ -1,5 +1,5 @@
 {
-  "name": "nebula-de-notas",
+  "name": "MR",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,6 +16,6 @@
     "vite": "^7.1.7"
   },
   "dependencies": {
-  "@supabase/supabase-js": "^2.0.0"
-}
+    "@supabase/supabase-js": "^2.0.0"
+  }
 }
