@@ -7,16 +7,52 @@
 
       // Texto de la carta
       // `messageText` se usa para el efecto de escritura (sin HTML visible)
-      const messageText = `You, 
-      Hola HOLA hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
-          
-            COQUETA`;
+      const messageText = `Sury, 
+      Holaa, se me ocurrio hacer algo asi para ti, espero que te guste, la verdad es que no soy bueno con las palabras 
+      soy mas de escuchar y se que puedo llegar a ser muy aburrido pero te dedico esta carta para que te diviertas un ratito ...
+
+      Tu me tienes como un electron girando en tu orbita. Muy cursi? Bueno solo es el primero...
+      Si tu fueras pan yo seria tu cafe ...
+
+      Acaso eres una mezcla de Boro? Oxigeno? Niquel? Tantalo? 
+      Porque estas bien B - O - Ni - Ta.
+
+      Ahora no se si te habia contado que me gustan mucho las estrellas y el universo, pero siempre he buscado la perfeccion en ellas
+      pero me di cuenta que al verte a los ojos es mucho mejor que todo eso... 
+
+      Si ser romantico fuera un delito, moriria en cadena perpetua...
+
+      Si fueras un experimento de Skinner, estaria dispuesto a se tu sujeto de prueba.
+
+      Mi creatividad empezo a volar y me entro una duda ... La ciencia esta tan avanzada que hasta los bombones puedes caminar?
+      y llego una respuesta mientras escribia esto... tengo que comprarme un dicionario porque desde que mire me quede sin palabras.
+
+      y para terminar por ahora ... no te deseo buenos dias ni buenas noches te deseo todo el dia.`;
 
       // `messageHTML` contiene el HTML final con el enlace (se inyecta al completar)
-      const messageHTML = `You, 
-      Hola HOLA hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola hola
+      const messageHTML = `Sury, 
+      Holaa, se me ocurrio hacer algo asi para ti, espero que te guste, la verdad es que no soy bueno con las palabras 
+      soy mas de escuchar y se que puedo llegar a ser muy aburrido pero te dedico esta carta para que te diviertas un ratito ...
+
+      Tu me tienes como un electron girando en tu orbita. Muy cursi? Bueno solo es el primero...
+      Si tu fueras pan yo seria tu cafe ...
+
+      Acaso eres una mezcla de Boro? Oxigeno? Niquel? Tantalo? 
+      Porque estas bien B - O - Ni - Ta.
+
+      Ahora no se si te habia contado que me gustan mucho las estrellas y el universo, pero siempre he buscado la perfeccion en ellas
+      pero me di cuenta que al verte a los ojos es mucho mejor que todo eso... 
+
+      Si ser romantico fuera un delito, moriria en cadena perpetua...
+
+      Si fueras un experimento de Skinner, estaria dispuesto a se tu sujeto de prueba.
+
+      Mi creatividad empezo a volar y me entro una duda ... La ciencia esta tan avanzada que hasta los bombones puedes caminar?
+      y llego una respuesta mientras escribia esto... tengo que comprarme un dicionario porque desde que mire me quede sin palabras.
+
+      y para terminar por ahora ... no te deseo buenos dias ni buenas noches te deseo todo el dia.`;
           
-              <div style="text-align:center;"><a href="..." target="_blank" rel="noopener noreferrer">....</a></div>`;
+      //<div style="text-align:center;"><a href="Cancion" target="_blank" rel="noopener noreferrer">Cancion</a></div>
 
     let typed = false;
 
